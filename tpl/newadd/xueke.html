@@ -1,0 +1,139 @@
+<style>
+    .ditutc{z-index: 100;}
+    .wx_xueke_ul{height:343px;overflow-y: auto;}
+    .wx_nianji ul li {
+    display: inline-block;
+    width: auto;
+    min-width: 80px;
+    height: 30px;
+    border: 1px solid #f29600;
+    line-height: 30px;
+    text-align: center;
+    margin: 20px 50px 0 0;
+    padding: 0 10px;
+    position: relative;
+    cursor: pointer;
+    vertical-align: top;
+}
+</style>
+<div class="zy_main">
+	<div class="wx_fanhui">
+		<!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
+		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont">
+		<div class="zy_centerTit">
+			<span class="zy_active">学科管理</span>
+		</div>
+		<div class="zy_centerTit2" ng-hide="state.schoolshowstate">
+        <!--	循环小学、初中、高中	-->
+			<ul class="gradetype clearfix">
+				<li ng-repeat="item in state.levelList"  ng-class="{'active':state.levelIndex==$index}" ng-bind="item.name" ng-click="changeLevel($index,item)"></li>
+			</ul>
+			<span class="show_school" ng-click="showschoolaction()" style="font-size:16px;">查看学校</span>
+		</div>
+        <!--	查看学校	-->
+		<div class="jiaocai_school address" ng-show="state.schoolshowstate && state.userType!=4">
+			<!--<zjy-address conf="addressData"></zjy-address>-->
+			<zjy-address selettypefn="selettypefn" tabflag= "0"></zjy-address>
+			<button type="button" style="background: #458df4;" ng-click="searchSchool()" class="btn btn-info">确认</button>
+			<span class="checkxueduan" ng-click="showxueduanaction()" style="font-size:16px;">查看学段</span>
+		</div>
+		
+        <!--	学科分类	-->
+		<div class="xueketype"  ng-hide="state.subjectstate">
+		    <p style="height:35px;line-height:35px;margin-top:20px;border-bottom:1px solid #ccc;font-size:16px;"><span class="fl">学科分类</span><span style="color:#e04648;float:right">（提示：点击方格进行编辑或修改）</span></p>
+		    <div class="wx_clear"></div>
+		    <div class="zy_switchCon">
+                <div class="wx_nianji" ng-repeat="nianji in xuekelists">
+                   
+                    <p ng-bind="nianji.xktype"></p>
+                    <ul>
+                        <li ng-mouseleave="banjiguanli(!banji)" ng-mouseenter="banjiguanli(banji)" ng-repeat="banji in nianji.xuekelist">
+                            <div ng-click="bianjiname($event,banji.id,banji.name)" ng-bind="banji.name"></div>
+                            <i ng-show="delbanji==banji" ng-click="deltc($event,banji.id)"></i>
+                        </li>
+                    </ul> 
+                    <span ng-click="tjbanji($event,nianji.value,nianji.xuekelist)" class="add">+</span>
+                    <span class="wx_none wx_ycsrk"><input type="text"></span>
+                    <span ng-click="baocun($event,nianji.value)" class="wx_baocun wx_none">✔</span>
+                    <span ng-click="fangqi($event)" class="wx_fangqi wx_none">✘</span>
+                    <div class="wx_clear"></div>
+                </div>
+            </div>
+		</div>
+    <!--	设置各年级学科	-->
+        <div class="wx_setsubject"  ng-hide="state.subjectgradshowstate">
+           <p style="font-size:16px;">设置各年级学科</p>
+            <div class="wx_editecon"  ng-repeat="i in schoolbranch">
+               <p>{{i.nianji}} <i class="wx_xkicon-bianji" ng-click="bianjiroleclick(i.gradId,i.sort,i.xueke)"></i> </p>
+                <ul class="wx_xueke_ul">
+                   <li ng-repeat="e in i.xueke">{{e.name}}</li>
+                </ul>
+            </div>
+        </div>
+	</div>
+</div>
+
+
+<!--编辑学科弹窗-->
+<div class="wx_addClass" ng-show="state.addClass">
+    <div class="wx_gy_hide"></div>
+    <div class="wx_addclass_con">
+        <p class="zy_boxTit"> <span style="font-size:16px;font-weight:bold">添加学科</span> (点击选择，再次点击取消选择) <i class="zy_close zy_SubjCloseBtn" ng-click="state.addClass=!state.addClass"></i> </p>
+        <div class="wx_addclassul">
+            <button ng-repeat="c in classes" ng-class="{active:c.active==1,yicunzai:c.rept==1}" ng-click="c.active=!c.active" ng-disabled="c.rept==1" data-cid="{{c.id}}" >{{c.name}}</button>
+        </div>
+        <div class="zy_btnGroup">
+            <input type="button" class="zy_sure zy_selectSubSure" ng-click="sureadd($event)"  value="确认" />
+            <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="state.addClass=!state.addClass" value="取消" ng-click="addClass=!addClass" /> </div>
+    </div>
+</div>
+
+<!--确认删除弹窗-->
+    <div class="gy_del_down zy_addClassBox" style="display:none">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';">是否删除该学科？</p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel()" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="caldel()" value="取消" ng-click="subBox=!subBox" /> </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--警告弹框-->
+    <div class="gy_del_down zy_warningBox" style="display:none">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <p>
+                <img src="./img/chenggong.png" alt="" style="height:46px"/>
+                <i>删除成功</i>
+            </p>
+        </div>
+    </div>
+
+    <div class="gy_del_down wx_erro_tc" style="display:none">
+        <div class="gy_hide"></div>
+        <div class="gy_con" style="width:400px;height:230px;">
+            <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;">
+                <img src="./img/wonde_big.png" alt=""/>
+                <span></span>
+            </p>
+        </div>
+    </div>
+<div class="gy_del_down zjy-loading" ng-show="pop.loadingstate">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+    	<img ng-src="{{pop.imgurl}}"/>
+    	<i>{{pop.text}}</i>
+    </div>
+</div>
+<img src="./img/chenggong.png" style="display: none;"/>
+<img src="./img/wonde_big.png" style="display: none;"/>
+<img src="./img/noselet.png" style="display: none;"/>
+<img src="./img/seletchange.png" style="display: none;"/>

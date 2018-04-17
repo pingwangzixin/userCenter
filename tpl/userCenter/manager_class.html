@@ -1,0 +1,93 @@
+
+    <style type="text/css">
+    	.wx_fangqi {
+		    color: #fff!important;
+		    border: 1px solid #ccc!important;
+		    background: #ccc;
+		}
+		.wx_nianji ul li input {
+		    outline: none;
+		}
+		
+		.wx_jiahaoclass{
+			display: inline-block;
+			width: 80px;
+		    height: 30px;
+		    border: 1px dashed #f29600;
+		    line-height: 30px;
+		    text-align: center;
+		    margin: 20px 15px 0 0;
+		    color: #f29600;
+		    cursor: pointer;
+		    font-size: 16px;
+		    vertical-align: top;
+		}
+    </style>
+    <div class="zy_main">
+    	<div class="wx_fanhui">
+	        <!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
+	        <a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+	    </div>
+        <div class="zy_cont">
+            <p class="zy_centerTit"> <span class="zy_active">班级管理</span> 
+            	<!--<span class="wx_right wx_red_font wx_tit_span" style="cursor:default">（提示：点击方格进行编辑或修改）</span>--> 
+            </p>
+            <div class="zy_switchCon">
+                <div class="wx_nianji" ng-repeat="nianji in xuexiao.data.gradesList">
+                   
+                    <p ng-bind="nianji.gradeName"></p>
+                    <ul>
+                       <em ng-hide="true" ng-bind="nianji.gradeId"></em>
+                        <li ng-mouseleave="banjiguanli(!banji)" ng-mouseenter="banjiguanli(banji)" ng-repeat="banji in nianji.classesList">
+                        	<em ng-bind="banji.name+'班'"></em>
+                            <p ng-hide="true" ng-bind="banji.id"></p><i ng-show="delbanji==banji" ng-click="deltc($event,banji.id)"></i>
+                        </li>
+                    </ul>
+                    <em ng-click="tjbanji($event,nianji.gradeId)" class="wx_jiahaoclass" ng-hide="addClasshide">+</em> 
+                    <span class="wx_none wx_ycsrk"><input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="请输入数字"></span> 
+                    <span ng-click="baocun()" class="wx_baocun wx_none">保存</span> 
+                    <span ng-click="fangqi($event)" class="wx_fangqi wx_none">取消</span>
+                    <div class="wx_clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--确认删除弹窗-->
+    <div class="gy_del_down zy_addClassBox" ng-hide="suerdeltc">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <!--弹框具体宽高自定义-->
+            <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="suerdeltc=!suerdeltc"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';">是否删除该班级？</p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel()" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" value="取消" ng-click="suerdeltc=!suerdeltc" /> </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--警告弹框-->
+    <!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+    <div class="gy_del_down zy_warningBox" ng-hide="warnsucetc">
+        <div class="gy_hide"></div>
+        <div class="gy_con"><!--弹框具体宽高自定义-->
+            <p>
+                <img src="./img/chenggong.png" alt="" style="height:46px"/>
+                <i>删除成功</i>
+            </p>
+        </div>
+    </div>
+
+    <!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+    <div class="gy_del_down wx_erro_tc"  ng-hide="warnworntc">
+        <div class="gy_hide"></div>
+        <div class="gy_con" style="width:400px;height:230px;"><!--弹框具体宽高自定义-->
+            <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;">
+                <img src="./img/wonde_big.png" alt=""/>
+                <span></span>
+            </p>
+        </div>
+    </div>

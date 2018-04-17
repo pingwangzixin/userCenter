@@ -1,0 +1,228 @@
+<div class="zy_main">
+	<div class="wx_fanhui">
+			<!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
+		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont">
+		<div class="zy_centerTit">
+			<span class="zy_active">机构管理</span>
+            <div class="zjy_handle_tab">
+                <strong ng-class="{'active':state.headTab==0}" ng-click="changeTable(0)">注册机构</strong>
+                <strong ng-class="{'active':state.headTab==1}" ng-click="changeTable(1)">已停用</strong>
+                <strong ng-class="{'active':state.headTab==2}" ng-click="changeTable(2)">回收站</strong>
+            </div>
+		</div>
+		<div class="import_down">
+			<div class="address">
+				<zjy-address selettypefn="selettypefn" isjigou="true"></zjy-address>
+			</div>
+			<div ng-if="state.headTab==0" class="searchli"><input ng-keydown="onkeydown('online')" maxlength="30" type="text" ng-model="state.parentOnlineSearch" placeholder="请输入机构名称" ng-trim="true"/><span class="handle_search" ng-click="handleSearch('online')"></span></div>
+			<div ng-if="state.headTab==1" class="searchli"><input ng-keydown="onkeydown('stop')" maxlength="30" type="text" ng-model="state.parentStopSearch" placeholder="请输入机构名称" ng-trim="true"/><span class="handle_search" ng-click="handleSearch('stop')"></span></div>
+			<div ng-if="state.headTab==2" class="searchli"><input ng-keydown="onkeydown('recover')" maxlength="30" type="text" ng-trim="true" ng-model="state.parentRecoverSearch" placeholder="请输入机构名称"/><span class="handle_search" ng-click="handleSearch('recover')"></span></div>
+		</div>
+		<div class="zy_switchCon zjy_teach_handle zjy_parent_hand">
+            <div ng-switch="state.headTab">
+                <div ng-switch-when="0">
+                    <div class="handle_head">
+                        <ul>
+                            <li ng-click="addParentInfo('add')">新增</li>
+                            <li ng-click="parentonlineAction('stop')">停用</li>
+                            <li ng-click="parentDeleAction('delete')">删除</li>
+                        </ul>
+                    </div>
+                    <div class="handle_table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th width="4%"><input type="checkbox" ng-model="state.allchecked" id="allcheck" ng-click="clickallCheck($event)"/><label for="allcheck" onSelectStart="return false"></label></th>
+                                    <th width="40%">机构名称</th>
+                                    <th width="40%">机构类型</th>
+                                    <th width="4%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tabledata in parentsList.tableMsgList">
+                                    <td><input type="checkbox" ng-checked="isChecked(tabledata.id)" ng-click="changeCheckbox($event,tabledata)"/></td>
+                                    <td>{{tabledata.name}}</td>
+                                    <td>{{tabledata.gradeName}}</td>
+                                    <td><i class="xiugai_icon" ng-click="updateSchoolMsg(tabledata.id,0,1)"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="handle_footer">
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsOnlineCount"></span>条</span> 
+                           <zjy-pagination conf="parentPaginationOnline" onSelectStart="return false"></zjy-pagination>
+                        </div>
+                    </div>
+                </div>
+                <div ng-switch-when="1">
+                	<div class="handle_head">
+                        <ul>
+                            <li ng-click="parentStopAction('qiyong')">启用</li>
+                            <li ng-click="parentDeleAction('stop')">删除</li>
+                        </ul>
+                    </div>
+                    <div class="handle_table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th width="4%"><input type="checkbox" ng-model="state.allStopchecked" id="allStopchecked" ng-click="clickStopCheck($event)"/><label for="allStopchecked" onSelectStart="return false"></label></th>
+                                    <th width="40%">机构名称</th>
+                                    <th width="40%">机构类型</th>
+                                    <th width="4%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tabledata in parentsList.tableMsgStop">
+                                    <td><input type="checkbox" ng-checked="isStopChecked(tabledata.id)" ng-click="changeStopCheckbox($event,tabledata.id)"/></td>
+                                    <td>{{tabledata.name}}</td>
+                                    <td>{{tabledata.gradeName}}</td>
+                                    <td></td>
+<!--                                    <td><i class="xiugai_icon" ng-click="updateSchoolMsg(tabledata.id,0,2)"></i></td>-->
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="handle_footer">
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsStopCount"></span>条</span> 
+                           <zjy-pagination conf="parentPaginationStop" onSelectStart="return false"></zjy-pagination>
+                        </div>
+                    </div>
+                </div>
+                <div ng-switch-when="2">
+                    <div class="handle_head">
+                        <ul>
+                            <li ng-click="parentRecoverAction('renew')">还原</li>
+                            <li ng-click="parentDeleAction('recover')">彻底删除</li>
+                        </ul>
+                    </div>
+                    <div class="handle_table">
+                        <table>
+                           <thead>
+                                <tr>
+                                    <th width="4%"><input type="checkbox" ng-model="state.allcheckedRecover" id="allcheckRe" ng-click="clickRecoverCheck($event)"/><label for="allcheckRe" onSelectStart="return false"></label></th>
+                                    <th width="40%">机构名称</th>
+                                    <th width="40%">机构类型</th>
+                                    <th width="4%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tabledata in parentsList.tableMsgListRecover">
+                                    <td><input type="checkbox" ng-checked="isCheckedRecover(tabledata.id)" ng-click="changeRecoverCheckbox($event,tabledata.id)"/></td>
+                                    <td>{{tabledata.name}}</td>
+                                    <td>{{tabledata.gradeName}}</td>
+                                    <td></td>
+<!--                                    <td><i class="xiugai_icon" ng-click="updateSchoolMsg(tabledata.id,3,'')"></i></td>-->
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="handle_footer">
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsRecoverCount"></span>条</span> 
+                           <zjy-pagination conf="parentPaginationRecover" onSelectStart="return false"></zjy-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox" ng-show="state.warningShow">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="z-index:9999"><!--弹框具体宽高自定义-->
+		<p>
+			<img ng-src="{{state.imgNotice}}" alt="" style="vertical-align: middle;height: 32px;"/>
+			<i ng-bind="state.noteContent"></i>
+		</p>
+    </div>
+</div>
+
+<!--确认删除弹窗（1） 删除到回收站  传参3-->
+    <div class="gy_del_down zy_addClassBox" ng-show="state.deletStatus3">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <!--弹框具体宽高自定义-->
+            <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';" ng-bind="state.sureDeletContent"></p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel(3)" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="gbtc()" value="取消" /> </div>
+            </div>
+        </div>
+    </div>
+	<div class="gy_del_down zy_addClassBox" ng-show="state.deletStatus2">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <!--弹框具体宽高自定义-->
+            <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';" ng-bind="state.sureDeletContent"></p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel(2)" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="gbtc()" value="取消" /> </div>
+            </div>
+        </div>
+    </div>
+	<!--确认删除弹窗（2）彻底删除 传参1-->
+	<div class="gy_del_down zy_addClassBox" ng-show="state.deletStatus1">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <!--弹框具体宽高自定义-->
+            <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';" ng-bind="state.sureDeletContent"></p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel(1)" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="gbtc()" value="取消" /> </div>
+            </div>
+        </div>
+    </div>
+    <img src="./img/chenggong.png" alt="" style="display: none"/>
+    <img src="img/wonde_big.png" alt="" style="display: none"/>
+    
+    <div class="gy_del_down renke_tealist jigou_foot_list" ng-show="state.AddState">
+	    <div class="gy_hide"></div>
+	    <div class="gy_con">
+	    	<h3><span class="tit">添加机构</span> <i class="close" ng-click="closeTea()"></i></h3>
+	    	<div class="tealist_main jigouadd_main">
+	    		<div class="selection">
+	    			<label>机构地区 : </label>
+	    			<!-- <select> -->
+	    				<!-- <option value="">请选择地区</option> -->
+	    				<!-- <option value="">北京</option> -->
+	    				<!-- <option value="">上海</option> -->
+	    			<!-- </select> -->
+					<select name="" ng-model="parentsList.areaId" ng-options="area.id as area.name for area in areaa" ng-change="selSchoolArea()">
+								<option value="">请选择区域</option>
+					</select>
+	    		</div>
+	    		<div class="selection">
+	    			<label>机构类型 : </label>
+	    			<select ng-model="officeType" >
+	    				<option value="">请选择机构类型</option>
+	    				<option value="1">小学</option>
+	    				<option value="2">初级中学</option>
+						<option value="3">高级中学</option>
+						<option value="4">小学教学点</option>
+						<option value="5">九年一贯制学校</option>
+						<option value="6">完全中学</option>
+						<option value="7">特殊教育学校</option>
+						<option value="8">机构</option>
+	    			</select>
+	    		</div>
+	    		<div class="selection">
+	    			<label>机构名称 : </label>
+	    			<input type="text" ng-model="officeName" id="" value="" />
+	    		</div>
+	    		<div class="footBtn">
+	    			<button type="button" class="btn btn-info" ng-click="submitOfficeMsg()">确认添加</button>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>

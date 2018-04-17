@@ -1,0 +1,38 @@
+<div class="zy_header">
+	<div class="zy_navBg">
+		<div class="zy_nav clearfix">
+			<img  class="fl zy_jetsen" src="img/logo_white.png"/>
+			<a class="zy_back fr" ng-href="{{comeBackBtn}}">返回云空间首页<i></i></a>
+		</div>
+	</div>
+</div>
+
+<!--<header></header>-->
+<div class="zy_main">
+	<div class="zy_cont">
+		<p class="zy_centerTit"> 
+			<span class="zy_active">选择角色</span>
+		</p>
+		<div class="zy_register_role">
+			<ul class="clearfix">
+				<li ui-sref="teacher_index.personal_manager" >
+					<img src="./img/register_admin.png"/>
+					<span>我是管理者</span>
+				</li>
+				<li ui-sref="teacher_index.teacher_personal({'tableChange':0,'teachId':'undefined'})" >
+					<img src="./img/register_teacher.png"/>
+					<span>我是教师</span>
+				</li>
+				<li ui-sref="teacher_index.parent_center" >
+					<img src="./img/register_parent.png"/>
+					<span>我是家长</span>
+				</li>
+				<li ui-sref="teacher_index.student_personal" >
+					<img src="./img/register_student.png"/>
+					<span>我是学生</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+</div>

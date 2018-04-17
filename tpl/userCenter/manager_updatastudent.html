@@ -1,0 +1,348 @@
+<style>
+	input[type="radio"] {
+		margin: 3px 3px 0px 5px;
+		display: none;
+	}
+	
+	label {
+		padding-left: 20px;
+		cursor: pointer;
+		background: url(img/radio_false.png) no-repeat left top;
+	}
+	
+	input:checked+label {
+		background: url(img/radio_true.png) no-repeat;
+	}
+	
+	span.add {
+		display: inline-block;
+		width: 80px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		margin: -5px 15px 0 20px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 16px;
+		vertical-align: middle;
+		background: #25a1ee;
+		font-size: 14px;
+	}
+	
+	.wx_group span.add2 {
+		display: inline-block;
+		width: 80px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		margin: -5px 15px 0 20px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 16px;
+		vertical-align: middle;
+		background: #25a1ee;
+		font-size: 14px;
+	}
+	
+	.wx_add {
+		display: inline-block;
+		width: 80px;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		margin: -5px 15px 0 20px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 16px;
+		/*vertical-align: middle;*/
+		background: #f97046;
+		font-size: 14px;
+	}
+	
+	.wx_add_fenzu .gy_con {
+		width: 827px;
+		height: 327px;
+	}
+	
+	.wx_add_fenzu .wx_tit_head {
+		width: 100%;
+		height: 55px;
+		line-height: 55px;
+		background: #649ff4;
+	}
+	
+	.wx_ft16 {
+		font-size: 16px;
+	}
+	
+	.wx_fff {
+		color: #fff;
+	}
+	
+	.wx_ml30 {
+		margin-left: 30px;
+	}
+	
+	.wx_fenzu_list ul {
+		width: 710px;
+		min-height: 140px;
+	}
+	
+	.wx_fenzu_list {
+		padding: 20px 0 0 30px;
+	}
+	
+	.wx_fl {
+		float: left;
+	}
+	
+	.wx_fenzu_list ul li {
+		position: relative;
+		display: inline-block;
+		min-width: 70px;
+		height: 28px;
+		line-height: 28px;
+		border: 1px solid #f97046;
+		text-align: center;
+		padding: 0 10px;
+		margin-bottom: 10px;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+	
+	.wx_fenzu_list ul li.active {
+		background: #f97046;
+		color: #fff;
+	}
+	
+	.wx_fenzu_list ul span.wx_add_fz {
+		color: #f97046;
+		display: inline-block;
+		min-width: 70px;
+		height: 28px;
+		line-height: 28px;
+		border: 1px dashed #f97046;
+		padding: 0 10px;
+		margin-bottom: 10px;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+	
+	.wx_sure_add_btn {
+		width: 310px;
+		height: 34px;
+		background: #649ff4;
+		border-radius: 4px;
+		border: 0;
+		color: #fff;
+		outline: none;
+	}
+	
+	li .tipswrap {
+		width: 110px;
+		height: 28px;
+		line-height: 28px;
+		background: rgba(0, 0, 0, .4);
+		color: white;
+		cursor: pointer;
+		padding-left: 3px;
+		position: absolute;
+		left: 0;
+	}
+	
+	li .tipswrap .download {
+		padding-left: 18px;
+		background: url(./img/jiaocai_bianji.png) no-repeat left center;
+	}
+	
+	li .tipswrap .delete {
+		padding-left: 17px;
+		background: url(./img/jiaocai_shanchu.png) no-repeat left center;
+	}
+	
+	li .tipswrap .border {
+		display: inline-block;
+		position: absolute;
+		border: 10px solid transparent;
+		top: 28px;
+		border-top-color: rgba(0, 0, 0, .4);
+		left: 43px
+	}
+	
+	
+	
+	li .tipsContent {
+		width: 114px;position: absolute; top: -39px;left:2px; transition: height .2s; height: 0;overflow: hidden;
+	}
+	
+	.wx_fl li span{min-width: 70px;display:block}
+	
+	li:hover .tipsContent{height:40px}
+	
+	
+	
+	
+	.wx_group span input {
+		height: 28px;
+	}
+</style>
+<div class="zy_main">
+	<div class="wx_fanhui">
+		<a ui-sref="teacher_index.student_handle"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont">
+		<p class="zy_centerTit">
+			<span class="zy_active" style="width:100px!important">修改学生信息</span>
+		</p>
+		<div class="zy_switchCon">
+			<ul class="zy_basicMsg wx_span_style">
+				<li>
+					<b class="zy_mustStar">*</b><em>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</em>
+					<span><input type="text" ng-model="username" disabled="disabled"></span>
+					<i style="color:#888;margin-left:-40px" class="nameerro">(用于登录，请牢记)</i>
+				</li>
+				<li>
+					&nbsp;&nbsp;<em>学校名称：</em>
+					<span ng-bind="scoolName"></span>
+				</li>
+				<li>
+					<b class="zy_mustStar">*</b><em>所在年级：</em>
+					<select name="" id="" ng-model="user.nianjiData" ng-options="nianji.id as nianji.name for nianji in nianjiData" ng-change="selClass()" style="width:150px">
+						<option value="">请选择年级</option>
+					</select>
+				</li>
+				<li>
+					<b class="zy_mustStar">*</b><em>所在班级：</em>
+					<select name="" id="" ng-model="user.banjiData" ng-options="banji.id as banji.name for banji in banjiData" style="width:150px" ng-change="selClassid(user.banjiData)">
+						<option value="">请选择班级</option>
+					</select>
+				</li>
+				<li>
+					<b class="zy_mustStar">*</b><em>真实姓名：</em>
+					<span><input type="text" ng-model="realname"></span>
+					<span style="display:none;color:#f00;" class="nameerro">请填写姓名后再提交</span>
+				</li>
+				<li>
+					<b class="zy_mustStar">*</b><em>学&nbsp;&nbsp;籍&nbsp;号：</em>
+					<input type="text" ng-model="stuNo" style="width:200px;">
+					<span style="display:none;color:#f00;" class="xuejierro">请填写学籍号后再提交</span>
+				</li>
+
+				<li>
+					<b class="zy_mustStar">*</b><em>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：</em>
+					<input type="radio" name="ifTeach" id="zy_teacheingY" value="男" class="wx_radio" ng-model="sex" />
+					<label for="zy_teacheingY">男</label>
+					<input type="radio" name="ifTeach" id="zy_teacheingN" value="女" class="wx_radio" ng-model="sex" />
+					<label for="zy_teacheingN">女</label>
+				</li>
+				<li>
+					<em>设&nbsp;备&nbsp;名&nbsp;称：</em>
+					<input type="text" ng-model="deviceName" style="width:200px;">
+					<input type="text" ng-model="deviceId" ng-hide="true" />
+					<span style="display:none;color:#f00;" class="xuejierro">请填写学籍号后再提交</span>
+				</li>
+				<li>
+					<em>分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;组：</em>
+					<!--<pre>{{groupName}}</pre>-->
+					<b ng-repeat="i in groupName track by $index" style="margin:0 10px;">{{i.name}}</b>
+					<!--<i ng-repeat="i in groupName">{{i}}</i>-->
+					<span class="wx_add" style="margin-right: 0;" ng-click="addFenzu()">添加分组</span>
+				</li>
+				<li>
+					<em>民&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;族：</em>
+					<select name="" ng-model="userNation" ng-options="nation.id as nation.name for nation in nationData" style="width:150px">
+						<option value="">请选择民族</option>
+					</select>
+				</li>
+				<li>
+					<em>生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日：</em>
+					<select ng-model="selected" ng-options="s.name for s in list" ng-change="selectedChange()" style="width:112px;margin-right:20px">
+						<option value="">--请选择--</option>
+					</select>
+					<select ng-model="selected2" ng-options="sh.name for sh in selected.month" style="width:112px;margin-right:20px">
+						<option value="">--请选择--</option>
+					</select>
+					<select ng-model="selected3" ng-options="x.name for x in selected2.fullDate" style="width:112px">
+						<option value="">--请选择--</option>
+					</select>
+				</li>
+			</ul>
+			<div class="zy_btn_grop">
+				<input class="zy_submit zy_personalMsgSub" type="submit" name="" id="" value="保存" ng-click="xgxsxx()"  ng-disabled="love"/>
+			</div>
+		</div>
+	</div>
+</div>
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox tijiaocgtc" style="display:none">
+	<div class="gy_hide"></div>
+	<div class="gy_con" style="z-index:101">
+		<p>
+			<img src="img/chenggong.png" alt="" style="height:46px" class="chenggongimg" />
+			<i></i>
+		</p>
+	</div>
+</div>
+<div class="gy_del_down zy_warningBox tijiaosbtc" style="display:none">
+	<div class="gy_hide"></div>
+	<div class="gy_con" style="z-index:101">
+		<p>
+			<img src="img/wonde_big.png" alt="" style="height:30px" />
+			<i></i>
+		</p>
+	</div>
+</div>
+
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox" style="display:none">
+	<div class="gy_hide"></div>
+	<div class="gy_con" style="z-index:101">
+		<p>
+			<img src="./img/chenggong.png" alt="" style="height:46px" />
+			<i>删除成功</i>
+		</p>
+	</div>
+</div>
+
+<div class="gy_del_down wx_erro_tc" style="display:none">
+	<div class="gy_hide"></div>
+	<div class="gy_con" style="width:400px;height:230px;z-index:101">
+		<p style="width:250px;text-align:center;margin:100px auto;font-size:18px;">
+			<img src="./img/wonde_big.png" alt="" />
+			<span></span>
+		</p>
+	</div>
+</div>
+
+<!--tianjiafenzu弹框-->
+<div class="gy_del_down wx_add_fenzu" ng-show="adduser">
+	<div class="gy_hide"></div>
+	<div class="gy_con" style="z-index:100">
+		<div class="wx_tit_head">
+			<span class="wx_fl wx_ft16 wx_fff wx_ml30">添加分组</span><i class="zy_close zy_SubjCloseBtn wx_guanbi_btn" ng-click="adduser=!adduser"></i>
+		</div>
+		<div class="wx_fenzu_list">
+			<span class="wx_fl wx_ft16">选择小组：</span>
+			<ul class="wx_fl">
+				<li ng-repeat="item in state.subjectList track by $index" ng-class="{active:item.check}" ng-click="addfz($event,item)">
+					<div class="tipsContent">
+						<div class="tipswrap">
+							<b class="download" ng-click="editsubject($event,item.name)">编辑</b> | <b ng-click="deleteVerLevelSub(item.id)" class="delete">删除</b><i class="border"></i>
+						</div>
+					</div>
+					<span class="subjectmain" ng-class="{'active':state.versionId == item.id}" data-id='{{item.id}}' ng-click="getTextBook(item.id)" contenteditable="false" onblur="angular.element(this).scope().bluraction(this)" ng-bind="item.name"></span>
+				</li>
+				<span class="wx_group">
+					<span class="wx_add_fz" style="margin-right: 0;" ng-click="tjfenzu($event)">+ 添加分组</span>
+					<span style="margin-right: 0!important;margin-left: 20px;" class="wx_none wx_ycsrk"><input type="text" placeholder="请输入分组名称" style="width:100px;outline: none;"/></span>
+					<span style="margin-right: 0!important;" class="add2 wx_none" ng-click="baocun($event)">✔</span>
+					<span style="margin-right: 0!important;" class="add2 wx_none" ng-click="fangqi($event)">✘</span>
+				</span>
+
+			</ul>
+			<p style="text-align: center;margin-top:165px">
+				<button class="wx_sure_add_btn" ng-click="wx_sure_add_btn()">确认添加</button>
+			</p>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,135 @@
+<style>
+    em {
+        font-style: normal;
+    }
+    
+    input[type="text"] {
+        width: 200px;
+        border: 1px solid #ccc;
+        height: 30px;
+        outline: none;
+        padding: 0 10px;
+    }
+    
+    input[type="radio"] {
+        margin: 3px 3px 0px 5px;
+        display: none;
+    }
+    
+    select {
+        width: 150px;
+        border: 1px solid #ccc;
+        margin-right: 20px;
+        height: 30px;
+        outline: none;
+    }
+    
+    .wx_glzjs input{
+    	display: none;
+    }
+    
+    .wx_glzjs label{
+    	padding-left: 20px;
+        cursor: pointer;
+        background: url(img/checkbox_false.png) no-repeat left top;
+        margin-right: 20px;
+        font-weight: normal;
+    }
+    .wx_glzjs input[type="radio"]:checked + label {
+        background: url(img/checkbox_true.png) no-repeat;
+    }
+
+    label {
+        padding-left: 20px;
+        cursor: pointer;
+        background: url(img/radio_false.png) no-repeat left top;
+        font-weight: normal;
+    }
+    
+    input[type="radio"]:checked + label {
+        background: url(img/radio_true.png) no-repeat;
+    }
+    input[type="checkbox"]:checked + label {
+        background: url(img/checkbox_true.png) no-repeat;
+    }
+    .wx_i_nbsp {
+        width: 28px;
+        display: inline-block;
+    }
+    .zy_switchCon p{margin:20px 0;}
+    .wx_glzjs ul li{display: inline-block;}
+</style>
+<header ng-show="reg"></header>
+<div class="zy_main">
+    <div class="wx_fanhui">
+        <a ui-sref="teacher_index.managePage"><img src="./img/jiantou.png" alt="" />返回</a>
+    </div>
+    <div class="zy_cont">
+        <p class="zy_centerTit"> <span ng-click="tab(0)" ng-class="{'zy_active':true}">个人信息</span></p>
+        <div class="zy_switchCon">
+            <div>
+                <!--姓名/身份证号/性别/民族/手机/邮箱-->
+                <p><b class="zy_mustStar">*</b><em>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</em>
+                    <input type="text" ng-model="userInfo.loginName" disabled="disabled"/> 
+                	<i style="color:#888;" class="nameerro">(用于登录，请牢记)</i>
+                </p>
+                <p><b class="zy_mustStar">*</b><em>真实姓名：</em>
+                    <input type="text" ng-model="realname"> </p>
+                <p><b class="zy_mustStar">*</b><em>性<i class="wx_i_nbsp"></i>别：</em>
+                    <input type="radio" name="ifTeach" id="zy_teacheingY" value="男" ng-model="sex" class="wx_radio" />
+                    <label for="zy_teacheingY">男</label>
+                    <input type="radio" name="ifTeach" id="zy_teacheingN" value="女" ng-model="sex" class="wx_radio" />
+                    <label for="zy_teacheingN">女</label>
+                </p>
+                <p><b class="zy_mustStar">*</b><em>民<i class="wx_i_nbsp"></i>族：</em>
+                    <select name="" ng-model="userNation" ng-options="nation.id as nation.name for nation in nationData" style="cursor:pointer;color: #333; width: 220px;">
+                        <option value="">选择民族</option>
+                    </select>
+                </p>
+                <p><b class="zy_mustStar">*</b><em>身份证号：</em>
+                    <input type="text" ng-model="idCard"> </p>
+                <p><b class="zy_mustStar">*</b><em>手&nbsp;&nbsp;机&nbsp;&nbsp;号：</em>
+                    <input type="text" ng-model="userMobile" ng-blur="mobileReg()"><span style="color:#f00;margin-left:10px" ng-hide="mobileTest">格式输入错误</span> </p>
+                <p><b class="zy_mustStar">*</b><em>邮<i class="wx_i_nbsp"></i>箱：</em>
+                    <input type="text" ng-model="userEmail"><span style="color:#bbb;margin-left:10px">(用于找回密码)</span> </p>
+                <p><b class="zy_mustStar">*</b><em>单位名称：</em>
+                    <select style="cursor:pointer;color: #333;" ng-model="areaId"  ng-options="area.id as area.name for area in areaList"  ng-change="selSchoolArea(areaId)">
+                        <option value="">选择区域</option>
+                    </select>
+                    <select style="cursor:pointer;color: #333;"  ng-model="officeId" ng-options="school.id as school.name for school in schools">
+                        <option value="">选择机构</option>
+                    </select>
+                </p>
+                <p>
+                	<div style="display: inline-block;"><b class="zy_mustStar">*</b><em>管理者角色：</em></div>
+                	
+                   <div  class="wx_glzjs" style="display: inline-block;width: 500px;vertical-align: top;">
+	                   	<ul>
+	                   		<li ng-repeat="i in roleList">
+								     <input type="checkbox" id={{i.id}} name="{{i.name}}" 
+										ng-checked="isSelected(i.id)" ng-click="updateSelection($event,i.id)">
+									<label for="{{i.id}}">{{i.name}}</label>
+	                   		</li>
+	                   	</ul>
+                   </div> 
+                </p>
+                <div class="zy_btn_grop">
+                    <input class="zy_submit zy_personalMsgSub" ng-click="submitManagerMsg()" type="submit" name="" id="" value="保存" ng-hide="reg"  ng-disabled="love"/>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox tijiaocgtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="img/chenggong.png" alt="" style="height:46px" class="chenggongimg" /> <i></i> </p>
+    </div>
+</div>
+<div class="gy_del_down zy_warningBox tijiaosbtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="img/wonde_big.png" alt="" style="height:30px" /> <i></i> </p>
+    </div>
+</div>

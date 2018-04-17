@@ -1,0 +1,128 @@
+<div class="zy_main">
+    <div class="wx_fanhui">
+        <!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
+        <a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+    </div>
+    <div class="zy_cont">
+        <p class="zy_centerTit"> <span class="zy_active">班级管理</span> <span class="wx_right wx_red_font wx_tit_span" style="cursor:default"></span> </p>
+        <div class="zy_switchCon">
+            <div class="wx_nianji" ng-repeat="nianji in xuexiao.data.gradesList">
+                <p ng-bind="nianji.gradeName"></p>
+                <ul>
+                    <li ng-mouseleave="banjiguanli(!banji)" ng-mouseenter="banjiguanli(banji)" ng-repeat="banji in nianji.classesList">
+                        <div >{{banji.name}}班</div>
+                        <p ng-hide="true" ng-bind="banji.id"></p><i ng-show="delbanji==banji" ng-click="deltc($event)"></i> </li>
+                </ul> <span ng-click="tjbanji(nianji.gradeId)" class="add">+</span>
+                <div class="wx_clear"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--确认删除弹窗-->
+<div class="gy_del_down zy_addClassBox" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+        <div class="zy_alertBoxCon zy_addClassDetail">
+            <div class="zy_selectGroup clearfix">
+                <p style="font-size: 18px;font-family: '微软雅黑';">是否删除该班级？</p>
+            </div>
+            <div class="zy_btnGroup">
+                <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel()" value="确认" />
+                <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="caldel()" value="取消" ng-click="subBox=!subBox" /> </div>
+        </div>
+    </div>
+</div>
+<style>
+    .wx_gy_hide {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, .3);
+        width: 100%;
+        height: 100%;
+    }
+    
+    .wx_addclass_con {
+        width: 828px;
+        height: 425px;
+        margin: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+    }
+    
+    .wx_addclassul {
+        padding: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .wx_addclassul button {
+        display: inline-block;
+        width: 46px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border: 1px solid #ccc;
+        position: relative;
+        cursor: pointer;
+        font-size: 14px;
+        background: none;
+        outline: none;
+        margin: 0 5px 10px 0;
+        padding:0;
+    }
+    
+    /*.wx_addClass span.wx_duigou {
+        display: none;
+        position: absolute;
+        bottom: -9px;
+        right: 0;
+    }
+    */
+    .wx_addclassul button.active {
+        color: #fff;
+        border: 1px solid #399fdf;
+    }
+    
+    /*.wx_addclassul button.active span.wx_duigou {
+        display: block;
+        color: #f97046;
+    }*/
+    
+    .wx_addclassul button.yicunzai {
+        color: #999;
+        border:1px solid transparent;
+    }
+</style>
+<!--添加班级弹窗-->
+<div class="wx_addClass" ng-show="addClass">
+    <div class="wx_gy_hide"></div>
+    <div class="wx_addclass_con">
+        <p class="zy_boxTit"> <span style="font-size:16px;font-weight:bold">添加班级</span> (点击选择，再次点击取消选择) <i class="zy_close zy_SubjCloseBtn" ng-click="addClass=!addClass"></i> </p>
+        <div class="wx_addclassul">
+            <button ng-repeat="c in classes" ng-class="{active:active,yicunzai:c.rept==1}" ng-click="active=!active" ng-disabled="c.rept==1" data-cid="{{c.id}}" >{{c.name}}</button>
+        </div>
+        <div class="zy_btnGroup">
+            <input type="button" class="zy_sure zy_selectSubSure" ng-click="sureadd()"  value="确认" />
+            <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="addClass=!addClass" value="取消" ng-click="addClass=!addClass" /> </div>
+    </div>
+</div>
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="./img/chenggong.png" alt="" style="height:46px" /> <i>删除成功</i> </p>
+    </div>
+</div>
+<div class="gy_del_down wx_erro_tc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="width:400px;height:230px;">
+        <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;"> <img src="./img/wonde_big.png" alt="" /> <span></span> </p>
+    </div>
+</div>

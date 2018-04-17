@@ -1,0 +1,129 @@
+<div class="zy_main">
+	<div class="wx_fanhui">
+		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont">
+		<div class="zy_centerTit">
+			<span class="zy_active">任课管理</span>
+		</div>
+		<div class="zy_centerTit zy_centerTit2">
+			<ul class="gradetype clearfix"  >
+				<li ng-repeat="nianji in nianjiList.data" ng-class="{true: 'active', false: ''}[$index==0]" ng-click="switchGrade($event,$index)" >{{nianji.name}}</li>
+			</ul>
+			<div class="import-renke" ng-click="importshow()"  style="display: none;" >
+				导入任课关系
+			</div>
+		</div>
+		<div class="renke_main">
+			<div class="renke_head">
+				<span>年级组长 : </span>
+				
+				<span ng-repeat="user in page.gradeEaUserCourse" >{{user.teaName}} {{$index!=0?'|':''}}
+				<i class="bianji" ng-click="showTealist('',12,'',$event)" data-teaId="{{user.uid}}" ></i>
+				</span><i class="bianji" ng-show="page.gradeEaUserCourse.length==0" ng-click="showTealist('',12,'',$event)" data-teaId="" ></i>
+			</div>
+			<div class="renke_taber" style="width:100%;overflow-x: auto;">
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<th >班级</th>
+						<th ng-repeat="class in page.eaClassList" >( {{class.name}} ) 班</th>
+					</tr>
+					<tr>
+						<td>班主任</td>
+						<td ng-repeat="leader in page.classLeader" ><span >{{leader.teaName}}</span> <i class="bianji" ng-click="showTealist('',1,$index,$event)" data-teaId="{{leader.uid}}" ></i></td>
+					</tr>
+					<tr ng-repeat="temp in page.subjectList " >
+						<td>{{temp.subject.name}}</td>
+						<td data-sid="{{temp.subject.id}}" ng-repeat="tea in temp.subjectTeaList track by $index"  > {{tea.teaName}} <i class="bianji" ng-click="showTealist1(temp.subject,14,$index,$event)" data-teaId="{{tea.teaId}}" data-sid="{{temp.subject.id}}"  ></i></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="gy_del_down renke_tealist renke_tealist1" ng-show="state.teacherAlert">
+	    <div class="gy_hide"></div>
+	    <div class="gy_con">
+	    	<h3><span class="tit">{{subject.name}}老师</span> <span>( 点击选择，再次点击取消选择 )</span><i class="close" ng-click="closeTea()"></i></h3>
+	    	<div class="tealist_main">
+	    		<table border="1" cellspacing="0" cellpadding="0">
+	    			<tbody>
+	    				<tr class="teacherList1" ng-repeat="(xindex,tr) in state.teacherList track by xindex">
+	    					<td data-tid="{{item.id}}" ng-class="{'active':item.active==1}" ng-repeat="(daindex,item) in tr" ng-click="changeteachList(item.id,$event)">{{item.realname}}</td>
+	    				</tr>
+	    			</tbody>
+	    		</table>
+	    		<p class="checkalltea" ng-click="getTeaData('')" ng-show="state.allteatype" >查看所有教师</p>
+	    		<p class="checkalltea" ng-click="getTeaData(subject.id)" ng-show="state.subjteatype" >查看{{subject.name}}教师</p>
+				<div class="footer">
+					<span class="sure" ng-click="addCourse(1)" >确认</span>
+					<span class="cancel" ng-click="closeTea()">取消</span>
+				</div>
+	    	</div>
+	    </div>
+	</div>
+	<div class="gy_del_down renke_tealist renke_tealist1" ng-show="state.teacherAlert1">
+		<div class="gy_hide"></div>
+		<div class="gy_con">
+			<h3><span class="tit">{{subject.name}}老师</span> <span>( 点击选择，再次点击取消选择 )</span><i class="close" ng-click="closeTea()"></i></h3>
+			<div class="tealist_main">
+				<table border="1" cellspacing="0" cellpadding="0">
+					<tbody>
+					<tr class="teacherList2" ng-repeat="(xindex,tr) in state.teacherList track by xindex">
+						<td data-tid="{{item.id}}" ng-class="{'active':item.active==1}" ng-repeat="(daindex,item) in tr"  ng-click="changeteachList1(item.id,$event)">{{item.realname}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<p class="checkalltea" ng-click="getTeaData('')" ng-show="state.allteatype" >查看所有教师</p>
+				<p class="checkalltea" ng-click="getTeaData(subject.id)" ng-show="state.subjteatype" >查看{{subject.name}}教师</p>
+				<div class="footer">
+					<span class="sure" ng-click="addCourse(2)" >确认</span>
+					<span class="cancel" ng-click="closeTea()">取消</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="gy_del_down importAlert renke_tealist renke_tealist1" ng-show="state.importAlert">
+	    <div class="gy_hide"></div>
+	    <div class="gy_con">
+	    	<h3><span class="tit">导入任课关系</span> <i class="close" ng-click="closeimport()"></i></h3>
+	    	<div class="import-content">
+	    		<h4>
+	    			<a ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=schoolName.xls" >
+	    				<span class="tit">模版下載</span>
+	    			</a>
+	    			<span class="tips"> ( 空白表，只包含格式，用于导入新数据 ) </span>
+	    			<span class="tips2"> ( 多个教师用逗号分隔 )  </span>
+	    		</h4>
+	    		<form id="form" >
+	    			<div class="inp-wrap">
+		    			<div class="fileshow" ng-show="state.fileshow">
+		    				<p style="color: #f97046;">文件已选择  </p>
+		    				<p>文件名 : {{state.filename}} 文件大小 : {{state.filesize}} 文件类型 : {{state.filetype}}</p>
+		    			</div>
+		    			<label ng-show="!state.fileshow" for="importrenke" id="renkeLabel"><span>浏览文件</span></label>
+		    			<input type="file" name="" onchange="angular.element(this).scope().fileAction(this)" id="importrenke"/>
+		    			<input type="hidden" name="versionId" value="1" />
+		    		</div>
+	    		</form>
+	    		
+	    		<div class="footer">
+	    			<span class="sure" ng-click="uplaodfile()" >确认</span>
+					<span class="cancel" ng-click="closeimport()">取消</span>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+</div>
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="./img/chenggong.png" alt="" style="height:46px" /> <i>删除成功</i> </p>
+    </div>
+</div>
+<div class="gy_del_down wx_erro_tc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="width:400px;height:230px;">
+        <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;"> <img src="./img/wonde_big.png" alt="" /> <span></span> </p>
+    </div>
+</div>

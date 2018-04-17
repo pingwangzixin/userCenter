@@ -1,0 +1,169 @@
+<style type="text/css">
+    .zjy_teach_handle .handle_table table tr td:last-of-type {
+        cursor: default;
+        text-align: left;
+    }
+    
+    .wx_icon-bianji {
+        width: 16px;
+        height: 16px;
+        background: url(./img/bianji.png)no-repeat center;
+        display: inline-block;
+        position: absolute;
+        right: 30px;
+        cursor: pointer;
+    }
+    
+    .wx_ul {
+        padding-left: 10px;
+        width: 480px;
+        height: 76px;
+        overflow-y: auto;
+    }
+    
+    .wx_add_juese {
+        height: 450px!important;
+    }
+    
+    .wx_js_add ul li {
+        display: inline-block;
+        min-width: 90px;
+        height: 30px;
+        position: relative;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+        border:1px solid #ccc;
+        margin: 0 -1px -1px 0;
+    }
+    input[type="text"]{transition: .3s;padding-left:10px;}
+    select{padding-left:10px;}
+    input[type="text"]:focus{border:1px solid #63a0f3;}
+</style>
+<div class="zy_main">
+    <div class="wx_fanhui">
+        <a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回 </a>
+    </div>
+    <div class="zy_cont">
+        <div class="zy_centerTit"> <span class="zy_active">角色权限</span> </div>
+        <div class="zy_switchCon zjy_teach_handle">
+            <div>
+                <div>
+                    <div class="handle_head">
+                        <ul>
+                            <li ng-click="newuserrole()">新增</li>
+
+                            <li ng-click="deluserrole()">删除</li>
+                        </ul>
+                    </div>
+                    <div class="handle_table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="line-height: 1;width:10%;">
+                                        <input type="checkbox" ng-click="selectAll($event)" ng-checked="isSelectedAll()" id="allcheck" />
+                                        <label for="allcheck" onSelectStart="return false">全选</label>
+                                    </th>
+                                    <th style="width:30%;">角色</th>
+                                    <th style="width:30%;">管辖范围</th>
+                                    <th>备注</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tabledata in userroles">
+                                    <td>
+                                        <input type="checkbox" name="selected" ng-checked="isSelected(tabledata.id)" ng-click="updateSelection($event,tabledata.id)" /> </td>
+                                    <td>{{tabledata.name}}<span ng-if="tabledata.state==1" class="wx_will_examine"></span></td>
+                                    <td>{{tabledata.scope|sctypesFilter}}</td>
+                                    <td style="position: relative;"><span style="display:inline-block;max-width:295px;"> {{tabledata.remark}} </span><i class="wx_icon-bianji" ui-sref="teacher_index.update_user_role({userRoleId:tabledata.id})"></i> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-show="zero" style="width:98px;margin:0 auto">共0人 暂无数据</div>
+                        <div class="handle_footer" ng-hide="zero">
+                            <zjy-pagination conf="contentpageConfig" onSelectStart="return false"></zjy-pagination> <span class="handle_persontit">共<span class="handle_personcount"></span>{{state.totleuser}}个</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox" ng-hide="state.warningShow">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p> <img ng-src="{{state.imgNotice}}" alt="" style="vertical-align: middle; height: 32px" /> <i ng-bind="state.noteContent"></i>
+            <div class="mescont" ng-repeat="i in state.repeatData" ng-if="state.repeatstate" ng-bind="i"></div>
+        </p>
+    </div>
+</div>
+<!--添加角色弹窗-->
+<div class="gy_del_down zy_addClassBox" ng-hide="state.addroleTc">
+    <div class="gy_hide"></div>
+    <div class="gy_con  wx_add_juese">
+        <!--弹框具体宽高自定义-->
+        <p class="zy_boxTit"> <span>添加角色 </span><i class="zy_close zy_SubjCloseBtn" ng-click="guanbi()"></i> </p>
+        <div class="zy_alertBoxCon" style="padding: 18px 0 0 30px;">
+            <div class="wx_js_add clearfix">
+                <p><span class="wx_titwx">角色名称：</span>
+                    <input type="text" ng-model="roleName" class="wx_input" /> </p>
+                <p> <span class="wx_titwx">管辖范围：</span>
+                    <select class="wx_select" ng-model="gxfw" id="" ng-options="sct.id as sct.name 
+								for sct in sctypes">
+                        <option value="">请选择管辖范围</option>
+                        <select> </p>
+                <p> <span class="wx_peizhi">配置权限：</span>
+                    <ul class="wx_ul">
+                        <li ng-repeat="quanxian in quanxians" ng-class="{active:quanxian.check}" ng-model="qx" ng-click="addqx($event,quanxian)">{{quanxian.name}} <em ng-hide="true">{{quanxian.id}}</em><span class="wx_duigou">✔</span></li>
+                    </ul>
+                </p>
+                <p> <span class="wx_titwx wx_float">备<b style="width:30px;display: inline-block;"></b>注:</span>
+                    <textarea name="" ng-model="remarkName" rows="" cols="" class="wx_textarea"></textarea>
+                </p>
+                <div class="clearfix"></div>
+                <button class="wx_sure_btn" ng-hide="tianjia_btn" ng-click="wx_sure_btn()">确认添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--确认删除弹窗-->
+<div class="gy_del_down zy_addClassBox" ng-hide="state.wx_del">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p class="zy_boxTit"> 删除 <i class="zy_close zy_SubjCloseBtn" ng-click="state.wx_del=true"></i> </p>
+        <div class="zy_alertBoxCon zy_addClassDetail">
+            <div class="zy_selectGroup clearfix">
+                <p style="font-size: 18px;font-family: '微软雅黑';" ng-bind="state.sureDeletContent"></p>
+            </div>
+            <div class="zy_btnGroup">
+                <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel()" value="确认" />
+                <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="state.wx_del=!state.wx_del" value="取消" /> </div>
+        </div>
+    </div>
+</div> <img src="img/chenggong.png" alt="" style="display: none" /> <img src="img/wonde_big.png" alt="" style="display: none" />
+<!--警告弹窗-->
+<div class="gy_del_down wx_erro_tc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="width:400px;height:230px;">
+        <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;"> <img src="./img/wonde_big.png" alt="" /> <span></span> </p>
+    </div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox tijiaocgtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p> <img src="img/chenggong.png" alt="" style="height:46px" class="chenggongimg" /> <i></i> </p>
+    </div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox tijiaosbtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p> <img src="img/wonde_big.png" alt="" style="height:30px" /> <i></i> </p>
+    </div>
+</div>

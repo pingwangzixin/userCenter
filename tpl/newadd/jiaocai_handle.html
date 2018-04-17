@@ -1,0 +1,182 @@
+<div class="zy_main">
+	<div class="wx_fanhui">
+<!--		<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
+		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont jiaocaicont" onselectstart="return false">
+		<div class="zy_centerTit">
+			<span class="zy_active">教材管理</span>
+		</div>
+		<div class="jiaocai_school address" ng-show="state.schoolshowstate&&state.userType!=4">
+			<zjy-address selettypefn="selettypefn" tabflag= "0"></zjy-address>
+			<button type="button" style="background: #458df4;" ng-click="getBookByOffice()" class="btn btn-info">确认</button>
+			<span class="checkxueduan" ng-click="showxueduanaction()">查看学段</span>
+		</div>
+		<div ng-hide="state.levelShowState" class="zy_centerTit2">
+			<ul class="gradetype clearfix">
+				<li ng-repeat="item in state.levelList"  ng-class="{'active':state.levelIndex==$index}" ng-bind="item.name" ng-click="changeLevel($index,item)"></li>
+			</ul>
+			<span ng-hide="state.schoolshowstate" class="show_school" ng-click="showschoolaction()">查看学校</span>
+		</div>
+		<div class="tabelwrap" ng-if="state.subjectType.length">
+			<div class="headsubject">
+				<select ng-change="subjectChange(subject)" ng-model="subject" ng-options="item.name for item in state.subjectType">
+					<option value="">请选择学科</option>
+				</select>
+				<span class="guanlian" ng-click="relationGrade()" ng-hide="state.schoolshowstate">
+					关联年级
+				</span>
+			</div>
+			<div class="subheader clearfix">
+				<ul class="subjecttype">
+					<li ng-repeat="item in state.subjectList track by $index">
+						<div ng-hide="state.schoolshowstate" class="tipsContent">
+							<div class="tipswrap">
+								<span class="download" ng-click="editsubject($event,item.name)">编辑</span> | <span ng-click="deleteVerLevelSub(item.id)" class="delete">删除</span><i class="border"></i>
+							</div>
+						</div>
+						<span class="subjectmain" ng-class="{'active':state.versionId == item.id}" data-id = '{{item.id}}' ng-click="getTextBook(item.id)" contenteditable="false" onblur="angular.element(this).scope().bluraction(this)" ng-bind="item.name"></span>
+					</li>
+					<p ng-hide="state.schoolshowstate" ng-click="addVerBoxBtn()"><b>+</b> 添加版本</p>
+				</ul>
+			</div>
+			<div class="section" ng-if="state.versionId != ''">
+				<div ng-hide="state.schoolshowstate" class="head_tips">
+					<span class="tips">
+						( 提示 : 直接拖动可排序 )
+					</span>
+					<button type="button" style="background: #458df4; outline: none;" class="btn btn-info" ng-click="saveimport()">保存</button>
+					<button type="button" style="background: #458df4; outline: none; margin-left:20px" class="btn btn-info" ng-click="importshow()">上传教材</button>
+		    		<button type="button" style="background: #458df4;outline: none; margin-left:20px" class="btn btn-info" ng-click="downloadmodel()">下载模板</button>
+				</div>
+				<div ng-if="data.length" class="row" style="overflow: hidden;">
+				  <div class="col-sm-12 j_direction_main">
+				    <div ui-tree id="tree-root">
+				      <ol ui-tree-nodes ng-model="data">
+				        <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'" data-collapsed="true"></li>
+				      </ol>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+<script type="text/ng-template" id="nodes_renderer.html">
+  <div ui-tree-handle class="tree-node tree-node-content">
+    <a class="btn btn-success btn-xs" ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
+        class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': collapsed,
+          'glyphicon-chevron-down': !collapsed
+        }"></span></a>
+    <span id="{{node.id}}">{{node.name}}</span>
+    <a ng-hide="state.schoolshowstate" class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeBook(this,node.id)"><span
+        class="glyphicon glyphicon-remove"></span></a>
+    <a ng-hide="state.schoolshowstate" class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span
+        class="glyphicon glyphicon-plus"></span></a>
+    <a ng-hide="state.schoolshowstate" class="pull-right btn btn-warning btn-xs" data-nodrag ng-click="editItem(this)" style="margin-right: 8px;">  
+            <span class="glyphicon glyphicon-edit"></span>  
+   </a>  
+  </div>
+  <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
+    <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'" data-collapsed="true">
+    </li>
+  </ol>
+</script>
+<div class="gy_del_down jiaocai_subject" ng-show="state.subjectEdit">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+    	<div class="con_wrap">
+    		<h2 style="color: #458DF4;">请填入节点名称</h2>
+		    <input type="text" class="form-control" ng-Keyup="maxLength(state.editTitle)" maxlength="{{state.maxLength}}" placeholder="最多{{state.maxLength}}个字符" ng-model="state.editTitle">
+		    <button type="button" style="background: #458df4;" class="btn btn-info" ng-click="sureEdit()">确认</button>
+		    <button type="button" class="btn" ng-click="canceledit()">取消</button>
+    	</div>
+    </div>
+</div>
+
+<div class="gy_del_down importAlert renke_tealist jiaocai_import" ng-show="state.importAlert">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="max-height: 333px;">
+    	<h3><span class="tit">上传教材</span> <i class="close" ng-click="closeimport()"></i></h3>
+    	<div class="import-content">
+    		<h4>
+    			<span class="tit"></span>
+    			<span class="tips"> </span>
+    		</h4>
+			<div class="inp-wrap">
+    			<div class="fileshow" ng-show="state.fileshow">
+    				<p style="color: #f97046;">文件已选择  </p>
+    				<p>文件名 : {{state.filename}} 文件大小 : {{state.filesize}} 文件类型 : {{state.filetype}}</p>
+    			</div>
+    			<label ng-show="!state.fileshow" for="importbook" id="renkeLabel"><span>浏览文件</span><p>上传时,建议您将文件名称改为您要上传的教材名称</p><p>(仅支持.xlsx、.xls格式的文件)</p></label>
+    			<input type="file" name="" onchange="angular.element(this).scope().fileAction(this)" id="importbook"/>
+    		</div>
+    		<div class="footer">
+    			<span class="sure" ng-click="uploadBook($event)">确认</span>
+				<span class="cancel" ng-click="closeimport()">取消</span>
+    		</div>
+    	</div>
+    </div>
+</div>
+<div class="gy_del_down renke_tealist guanlianwrap" ng-show="state.guanlian">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+    	<h3><span class="tit">关联年级</span> <i class="close" ng-click="state.guanlian=false"></i></h3>
+    	<div class="g_main">
+    		<div class="top">
+    			<span>{{state.levelName}}</span>
+    			<span>{{state.subjectName}}</span>
+    		</div>
+    		<div class="section" ng-repeat="item in state.gradeNoList">
+    			<label for="" value="item.id">{{item.name}} : </label>
+    			<select ng-change="gradeVerChange(item.id,item.versionId)" name="" ng-model="item.versionId" ng-options="verItem.id as verItem.name for verItem in state.subjectList">
+    				<option value="">请选择版本</option>
+    			</select>
+    		</div>
+    		<button type="button" style="background: #458df4;" class="btn btn-info" ng-click="saveGradeVer()">确认</button>
+    	</div>
+    </div>
+</div>
+<div class="gy_del_down importAlert renke_tealist jiaocai_import" ng-show="state.addsection">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+    	<h3><span class="tit">添加版本</span> <i class="close" ng-click="insertVerBtn()"></i></h3>
+    	<div class="import-content">
+    		<div class="top"><span ng-class="{'active':state.versioinadd==1}" ng-click="state.versioinadd=1">版本库</span><span ng-class="{'active':state.versioinadd==2}" ng-click="state.versioinadd=2">新建版本</span></div>
+    		<div ng-show="state.versioinadd==1">
+    			<div class="header jiaocaihead clearfix">
+	    			<i>版本库筛选 : </i>
+	    			<ul class="list clearfix">
+	    				<li ng-repeat="item in state.versionList" ng-class="{'active':state.sectionindex==$index}" ng-bind="item.name" ng-click="selectVersion($index,item.id)"></li>
+	    			</ul>
+	    		</div>
+    		</div>
+    		<div ng-show="state.versioinadd==2">
+    			<div class="create_section">
+	    			<label for="create">
+	    				创建新版本 :
+	    			</label>
+	    			<input type="text" class="form-control" ng-model="state.editTitle">
+	    		</div>
+    		</div>
+    		
+    		<div class="footer">
+    			<button type="button" style="background: #659ef5; outline: none;" class="btn btn-info" ng-click="saveVersion()">确认</button>
+    		</div>
+    	</div>
+    </div>
+</div>
+<div class="gy_del_down zjy-loading" ng-show="pop.loadingstate">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+    	<img ng-src="{{pop.imgurl}}"/>
+    	<i>{{pop.text}}</i>
+    </div>
+</div>
+<img src="./img/chenggong.png" style="display: none;"/>
+<img src="./img/wonde_big.png" style="display: none;"/>
+<img src="./img/noselet.png" style="display: none;"/>
+<img src="./img/seletchange.png" style="display: none;"/>

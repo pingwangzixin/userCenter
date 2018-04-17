@@ -1,0 +1,67 @@
+<style type="text/css">
+	.zy_centerTit{border-bottom: 1px solid #25a1ee;}
+	.zy_centerTit span.zy_active {color: #25a1ee;border-left:0;border-bottom: 2px solid #09c;height: 34px;}
+	.zy_centerTit span{padding-left:0;width:auto;min-width: 0;}
+	ul{padding:20px 0}
+	ul li {margin-bottom: 20px;}
+	ul li input{width:250px;height:26px;outline: none;}
+	.zy_centerTit i{margin: 0 16px;}
+</style>
+<div class="zy_header" ng-show="reg">
+	<div class="zy_navBg">
+		<div class="zy_nav clearfix">
+			<img  class="fl zy_jetsen" src="img/logo_white.png"/>
+			<a class="zy_back fr" ng-href="{{comeBackBtn}}">返回云空间首页<i></i></a>
+		</div>
+	</div>
+</div>
+
+<div class="zy_main">
+	<div class="wx_fanhui">
+			<a ng-click="goBack()" ng-hide="reg"><img src="./img/jiantou.png" alt="" />返回</a>
+			<a ui-sref="register_page" ng-show="reg"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+    <div class="zy_cont">
+        <p class="zy_centerTit">
+        	<span ng-click="tab(0)" ng-class="{'zy_active':switch == 0}">老师</span>
+        	<i ng-hide="reg"></i>
+        	<span ng-click="tab(1)" ng-class="{'zy_active':switch == 1}" ng-hide="reg">学生</span>
+        </p>
+        <div class="zy_switchCon">
+            <div ng-show="switch == 0">
+               <ul>
+               	<li>姓 名：<input type="text" /></li>
+               	<li>手 机：<input type="text" /></li>
+               	<p style="color:#FF0000"><img src="img/wonde_big.png" alt="" style="height:16px" />手机号验证失败!</p>
+               </ul>
+                <div class="zy_btn_grop">
+                    <input class="zy_submit zy_personalMsgSub" ng-click="submitStudentMsg(user)" type="submit" name="" id="" value="验证" ng-hide="reg" />
+                </div>
+            </div>
+            <!--	修改密码		-->
+            <div ng-show="switch == 1">
+            	<ul>
+               	<li>姓&nbsp;&nbsp;  名：<input type="text" /></li>
+               	<li>学籍号：<input type="text" /></li>
+               	<p style="color:#FF0000"><img src="img/wonde_big.png" alt="" style="height:16px" />学籍号验证失败!</p>
+               </ul>
+                <div class="zy_btn_grop">
+                    <input class="zy_submit zy_personalMsgSub" ng-click="submitStudentMsg(user)" type="submit" name="" id="" value="验证" ng-hide="reg" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--警告弹框-->
+<div class="gy_del_down zy_warningBox tijiaocgtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="img/chenggong.png" alt="" style="height:46px" class="chenggongimg" /> <i></i> </p>
+    </div>
+</div>
+<div class="gy_del_down zy_warningBox tijiaosbtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <p> <img src="img/wonde_big.png" alt="" style="height:30px" /> <i></i> </p>
+    </div>
+</div>

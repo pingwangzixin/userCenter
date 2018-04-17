@@ -1,0 +1,69 @@
+<div class="zy_main">
+	<div class="wx_fanhui">
+		<a ng-click="goBackUp()"><img src="./img/jiantou.png" alt="" />返回</a>
+	</div>
+	<div class="zy_cont">
+		<div class="zy_centerTit">
+			<span class="zy_active">机构管理</span>
+		</div>
+		<div class="zy_centerTit2">
+			<span class="zy_active">机构修改</span>
+		</div>
+		<div class="editorjigou_main">
+			<div class="selection">
+    			<label>机构地区 : </label>
+    			 <select ng-model="areaIds" ng-options="area.id as area.name for area in areaa">
+    				 <option value="">请选择地区</option>
+    			 </select> 
+    		</div>
+			<div class="selection">
+    			<label>机构类型 : </label>
+				<select ng-model="officeType" ng-change="tishi()">
+					<option value="">请选择机构类型</option>
+					<option value="1">小学</option>
+					<option value="2">初级中学</option>
+					<option value="3">高级中学</option>
+					<option value="4">小学教学点</option>
+					<option value="5">九年一贯制学校</option>
+					<option value="6">完全中学</option>
+					<option value="7">特殊教育学校</option>
+					<option value="8">机构</option>
+				</select> 
+    		</div>
+			<div class="selection">
+    			<label>机构名称 : </label>
+    			<input type="text" ng-model="officeName" name="" id="" value="" />
+    		</div>
+    		<div class="footBtn">
+    			<button type="button" class="btn btn-info" ng-click="updateOfficeMsg()">修改</button>
+    		</div>
+		</div>
+	</div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox" ng-show="state.warningShow">
+    <div class="gy_hide"></div>
+    <div class="gy_con"><!--弹框具体宽高自定义-->
+		<p>
+			<img ng-src="{{state.imgNotice}}" alt="" style="vertical-align: middle;height: 32px;"/>
+			<i ng-bind="state.noteContent"></i>
+		</p>
+    </div>
+</div>
+<div class="gy_del_down zy_addClassBox" ng-show="state.jigouType">
+        <div class="gy_hide"></div>
+        <div class="gy_con">
+            <!--弹框具体宽高自定义-->
+            <p class="zy_boxTit"> 修改 <i class="zy_close zy_SubjCloseBtn" ng-click="gbtc()"></i> </p>
+            <div class="zy_alertBoxCon zy_addClassDetail">
+                <div class="zy_selectGroup clearfix">
+                    <p style="font-size: 18px;font-family: '微软雅黑';">
+                    	修改机构类型可能会导致该机构下的用户数据异常，谨慎修改！
+                    </p>
+                </div>
+                <div class="zy_btnGroup">
+                    <input type="button" class="zy_sure zy_selectSubSure" ng-click="suredel()" value="确认" />
+                    <input type="button" class="zy_cancel zy_selectSubCancel" ng-click="gbtc()" value="取消" /> </div>
+            </div>
+        </div>
+    </div>

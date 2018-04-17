@@ -1,0 +1,62 @@
+<style>
+    .ditutc {
+        z-index: 100;
+    }
+    input[type="text"]{transition: .3s;padding-left:10px;}
+    select{padding-left:10px;}
+    input[type="text"]:focus{border:1px solid #63a0f3;}
+    .wx_ul{float: left;width: 1068px;}
+</style>
+<div class="zy_main">
+    <div class="wx_fanhui">
+        <a ui-sref="teacher_index.user_role"><img src="./img/jiantou.png" alt="" />返回</a>
+    </div>
+    <div class="zy_cont" style="min-height:500px;">
+        <div class="zy_centerTit"> <span class="zy_active">修改角色</span> </div>
+        <div class="wx_js_add clearfix">
+            <p><span class="wx_titwx">角色名称：</span>
+                <input type="text" ng-model="roleName" class="wx_input" /> </p>
+            <p> <span class="wx_titwx">管辖范围：</span>
+                <select style="margin-left:0;" class="wx_select" ng-model="gxfw" id="" ng-options="sct.id as sct.name 
+								for sct in sctypes">
+                    <option value="">请选择管辖范围</option>
+                    <select> </p>
+            <p> <span class="wx_peizhi" style="margin-right:10px">配置权限：</span>
+                <ul class="wx_ul">
+                    <li ng-repeat="quanxian in quanxians" ng-class="{active:quanxian.check}" ng-model="qx" ng-click="addqx($event,quanxian)">{{quanxian.name}} <em ng-hide="true">{{quanxian.id}}</em><span class="wx_duigou">✔</span></li>
+                </ul>
+                <div class="clearfix"></div>
+            </p>
+            <p> <span class="wx_titwx wx_float">备<b style="width:30px;display: inline-block;"></b>注:</span>
+                <textarea name="" ng-model="remarkName" rows="" cols="" class="wx_textarea"></textarea>
+            </p>
+            <div class="clearfix"></div>
+            <div style="text-align:center">
+                <button class="wx_sure_btn" ng-hide="bianji_btn" ng-click="wx_sureupdate_btn()" style="margin:20px 0;">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--警告弹窗-->
+<div class="gy_del_down wx_erro_tc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con" style="width:400px;height:230px;">
+        <p style="width:250px;text-align:center;margin:100px auto;font-size:18px;"> <img src="./img/wonde_big.png" alt="" /> <span></span> </p>
+    </div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox tijiaocgtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p> <img src="img/chenggong.png" alt="" style="height:46px" class="chenggongimg" /> <i></i> </p>
+    </div>
+</div>
+<!--gy_del_down为公用clss名不要动，后面起自己控制的class-->
+<div class="gy_del_down zy_warningBox tijiaosbtc" style="display:none">
+    <div class="gy_hide"></div>
+    <div class="gy_con">
+        <!--弹框具体宽高自定义-->
+        <p> <img src="img/wonde_big.png" alt="" style="height:30px" /> <i></i> </p>
+    </div>
+</div>
