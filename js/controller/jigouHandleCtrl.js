@@ -179,7 +179,7 @@ app.controller('jigouHandleCtrl', ['$scope', '$timeout', '$filter', 'loginServic
             $scope.addParentInfo = function () {
                 $scope.state.AddState = true;
                 $http.post(requireIp + '/ea/eaArea/findAreaListByAreaId', {
-                    areaId: areaIdGrade
+                    areaId: sessionStorage.getItem("areaId")
                 }).success(function (data) {
                     console.log(data);
                     $scope.areaa = data.data;

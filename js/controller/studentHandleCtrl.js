@@ -73,7 +73,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		initialuserParam.areaId = cityId;
 		userParam = initialuserParam;
 		//一进入页面获取的用户列表
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -81,7 +81,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		initialuserParam.areaId = countyId;
 		userParam = initialuserParam;
 		//一进入页面获取的用户列表
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -97,7 +97,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 			})
 			userParam = initialuserParam;
 			//一进入页面获取的用户列表
-			loginService.teachHandleUserList(userParam, function(res) {
+			loginService.queryUserList(userParam, function(res) {
 				$scope.state.lightHome = false;
 				$scope.tabledata(res);
 			})
@@ -108,7 +108,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 					initialuserParam.classId = res.data.id;
 					userParam = initialuserParam;
 					//一进入页面获取的用户列表
-					loginService.teachHandleUserList(userParam, function(res) {
+					loginService.queryUserList(userParam, function(res) {
 						$scope.state.lightHome = false;
 						$scope.tabledata(res);
 					})
@@ -192,7 +192,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		$scope.studentPaginationStop.currentPage=1;
 		$scope.studentPaginationRecover.currentPage=1;
 		//获取用户列表
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -228,7 +228,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		$scope.studentPaginationStop.currentPage=1;
 		$scope.studentPaginationRecover.currentPage=1;
 		//获取用户列表
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -264,7 +264,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		$scope.studentPaginationStop.currentPage=1;
 		$scope.studentPaginationRecover.currentPage=1;
 		//获取用户列表
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -286,7 +286,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 		$scope.studentPaginationOnline.currentPage=1;
 		$scope.studentPaginationStop.currentPage=1;
 		$scope.studentPaginationRecover.currentPage=1;
-		loginService.teachHandleUserList(userParam, function(res) {
+		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
 		})
@@ -645,7 +645,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 				$scope.studentList.checkboxReArr = [];
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 
-				loginService.teachHandleUserList(userParam, function(res) {
+				loginService.queryUserList(userParam, function(res) {
 					$scope.state.lightHome = false;
 					$scope.tabledata(res);
 				})
@@ -707,7 +707,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 				$scope.studentList.checkboxReArr = [];
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 				
-				loginService.teachHandleUserList(userParam, function(res) {
+				loginService.queryUserList(userParam, function(res) {
 					$scope.state.lightHome = false;
 					$scope.tabledata(res);
 				})
@@ -883,7 +883,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 				
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 				
-				loginService.teachHandleUserList(userParam, function(res) {
+				loginService.queryUserList(userParam, function(res) {
 					$scope.state.lightHome = false;
 					$scope.tabledata(res);
 				})
@@ -916,7 +916,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 				$scope.studentList.checkboxReArr = [];
 			
 			userParam.pageNo = currentpage;
-			loginService.teachHandleUserList(userParam, function(res) {
+			loginService.queryUserList(userParam, function(res) {
 				$scope.state.lightHome = false;
 				
 				$scope.tabledata(res);
@@ -941,7 +941,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 				$scope.studentList.checkboxReArr = [];
 			
 			userParam.pageNo = currentpage;
-			loginService.teachHandleUserList(userParam, function(res) {
+			loginService.queryUserList(userParam, function(res) {
 				$scope.state.lightHome = false;
 				
 				$scope.tabledata(res);
@@ -963,7 +963,7 @@ app.controller('studentHandleCtrl', ['$scope', '$state', '$timeout', '$http', '$
 			$scope.studentList.checkboxStopArr = [];
 			$scope.studentList.checkboxReArr = [];
 			userParam.pageNo = currentpage;
-			loginService.teachHandleUserList(userParam, function(res) {
+			loginService.queryUserList(userParam, function(res) {
 				$scope.state.lightHome = false;
 				$scope.tabledata(res);
 			})

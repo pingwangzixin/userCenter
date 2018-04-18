@@ -1,13 +1,27 @@
 app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$stateParams', '$timeout', '$http', function($scope, loginService, $state, $stateParams, $timeout, $http) {
+	
+	var cityId = sessionStorage.getItem("areaId"); //拿到市级ID
+	var countyId = sessionStorage.getItem("userAreaId"); //拿到区县ID
+	var scope = sessionStorage.getItem("scope"); //获取登录人的权限范围
+	var tableChange = sessionStorage.getItem("tableChange"); //切换的状态
+	var userId = sessionStorage.getItem("userId"); //拿到用户id
+	var officeId = JSON.parse(sessionStorage.getItem("userObj")).oid; //拿到学校id
+	var userRole= JSON.parse(sessionStorage.getItem("userObj")).teachStatus; //拿到用户的具体角色（1班主任15学校管理员）
+	var username = sessionStorage.getItem("userName");
+	
 	var loadingtimout = 1000;
-	var pageSize = 10;
-	var userObjId = sessionStorage.getItem('userId');
-	$scope.newschoolId = '';
-	$scope.love = false;
-	var teachStatus = JSON.parse(sessionStorage.getItem("userObj")).teachStatus; //拿到用户的具体身份
-	var oid = JSON.parse(sessionStorage.getItem("userObj")).oid; //拿到学校id
+//	var userObjId = sessionStorage.getItem('userId');
+//	$scope.newschoolId = '';
+//	$scope.love = false;
+//	var teachStatus = JSON.parse(sessionStorage.getItem("userObj")).teachStatus; //拿到用户的具体身份
+//	var oid = JSON.parse(sessionStorage.getItem("userObj")).oid; //拿到学校id
 
-	$scope.officenewid = oid
+//	$scope.officenewid = oid
+	
+	
+	var pageSize = 10;
+	var userType = 1;
+	
 	//各种状态判断
 	$scope.state = {
 		headTab: 0, //判断头部选项卡
@@ -34,24 +48,24 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	$scope.state.usertypestate = sessionStorage.getItem('userType') || 0
 	$scope.state.scopestate = sessionStorage.getItem('scope') || 0;
 
-	//声明学校id变量
-	var officeId = null;
-	var areaIds = null;
-	var scope = sessionStorage.getItem('scope');
-	if($scope.state.searchOfficeId != '') {
-		officeId = $scope.state.searchOfficeId;
-	} else {
-		if(scope == '2') {
-			areaIds = sessionStorage.getItem('areaId');
-		}
-		if(scope == '3') {
-			areaIds = sessionStorage.getItem('userAreaId');
-			officeId = ''
-		}
-		if(scope == '4') {
-			officeId = JSON.parse(sessionStorage.getItem('userObj')).oid;
-		}
-	}
+//	//声明学校id变量
+//	var officeId = null;
+//	var areaIds = null;
+//	var scope = sessionStorage.getItem('scope');
+//	if($scope.state.searchOfficeId != '') {
+//		officeId = $scope.state.searchOfficeId;
+//	} else {
+//		if(scope == '2') {
+//			areaIds = sessionStorage.getItem('areaId');
+//		}
+//		if(scope == '3') {
+//			areaIds = sessionStorage.getItem('userAreaId');
+//			officeId = ''
+//		}
+//		if(scope == '4') {
+//			officeId = JSON.parse(sessionStorage.getItem('userObj')).oid;
+//		}
+//	}
 
 	if($stateParams.tableChange) {
 		$scope.state.headTab = $stateParams.tableChange;
@@ -67,6 +81,64 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		tableMsgListRecover: []
 	}
 
+
+	var initialuserParam = {
+		userType:userType,
+		delFlag:0,
+		state:1,
+		pageNo:1,
+		pageSize:pageSize,
+		
+	}
+	
+	var userParam = initialuserParam;
+	
+	if(scope==2){	//市领导
+		initialuserParam.areaId = cityId;
+		userParam = initialuserParam;
+		//一进入页面获取的用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+	}else if(scope==3){	//区领导
+		initialuserParam.areaId = countyId;
+		userParam = initialuserParam;
+		//一进入页面获取的用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+	}else if(scope==4){	//校级领导（学校管理员或者班主任）
+		console.log(userRole)
+		if(userRole==15){	//学校管理员
+			initialuserParam.officeId = officeId;
+			userParam = initialuserParam;
+			//一进入页面获取的用户列表
+			loginService.queryUserList(userParam, function(res) {
+				$scope.state.lightHome = false;
+				$scope.tabledata(res);
+			})
+		}else{	//scope=4,但不是学校管理员
+			$scope.state.imgNotice = 'img/wonde_big.png';
+			$scope.state.warningShow = true;
+			$scope.state.noteContent = "获取校级用户角色错误";
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000);
+			return false;
+		}
+	}else{	//用户权限范围出现错误
+		$scope.state.imgNotice = 'img/wonde_big.png';
+			$scope.state.warningShow = true;
+			$scope.state.noteContent = "获取用户权限错误";
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000);
+			return false;
+	}
+	
+	//切换选项卡
 	$scope.changeHeadTab = function(tebState) {
 		$scope.state.headTab = tebState;
 		sessionStorage.setItem("tableChange", tebState)
@@ -74,35 +146,116 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			'tableChange': tebState
 		})
 	}
-
-	//搜索事件
-	$scope.onlineSearch = function(keywords, officeId) {
-		if($scope.state.headTab == 0) {
-			$scope.onlineKeyword = keywords;
-			$scope.teachPaginationRecover.currentPage = 1;
-			$scope.teachPaginationStop.currentPage = 1;
-			$scope.teachPaginationOnline.currentPage = 1;
+	
+	//切换选项卡后给userParam参数赋值
+	if($scope.state.headTab == 0) {
+		
+		} else if($scope.state.headTab == 1) {
+			userParam.state = 2;
 		} else if($scope.state.headTab == 2) {
-			$scope.stopKeyword = keywords;
-			$scope.teachPaginationRecover.currentPage = 1;
-			$scope.teachPaginationStop.currentPage = 1;
-			$scope.teachPaginationOnline.currentPage = 1;
-		} else if($scope.state.headTab == 3) {
-			$scope.recoverKeyword = keywords;
-			$scope.teachPaginationRecover.currentPage = 1;
-			$scope.teachPaginationStop.currentPage = 1;
-			$scope.teachPaginationOnline.currentPage = 1;
-		}
-		$scope.newschoolId = officeId;
-		$scope.TeacherQueryList();
+			userParam.state = null;
+			userParam.delFlag = 3;
 	}
-	//教师在线搜索回车
-	$scope.onlineKeyup = function(event, key, officeid) {
-		if(event.keyCode == 13) {
-			$scope.onlineSearch(key, officeid)
-		}
+		
+	
+	//选择学校后获取的用户列表
+	$scope.selettypefn = function(schoolId) {
+		userParam.officeId = schoolId;
+		userParam.pageNo = 1;
+		userParam.keyword = null;
+		//清空全选
+		$scope.state.teachOnlineChecked=false;
+		$scope.state.teachStopChecked=false;
+		$scope.state.teachRecoverChecked=false;
+		
+		$scope.teacherList.tableMsgList = [];
+		$scope.teacherList.tableMsgListStop = [];
+		$scope.teacherList.tableMsgListRecover = [];
+		//选择学校后把搜索框置空
+		$scope.state.parentOnlineSearch = null;
+		//选择学校后把分页置为1
+		$scope.teachPaginationRecover.currentPage=1;
+		$scope.teachPaginationStop.currentPage=1;
+		$scope.teachPaginationOnline.currentPage=1;
+		//获取用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+		
 	}
+	
+	
+//表格数据填充公用方法
+	$scope.tabledata = function(res) {
+		if(res.ret == 200) {
+			//在线的表格数据
+			$scope.state.lightHome = true;
+			$scope.teacherList.tableMsgList = res.data.list;
+			$scope.teachPaginationOnline.totalItems = res.data.count;
+			$scope.state.teachOnlineCount = res.data.count;
+			//已停用的表格数据
 
+			$scope.teacherList.tableMsgListStop = res.data.list;
+			$scope.teachPaginationStop.totalItems = res.data.count;
+			$scope.state.teachStopCount = res.data.count;
+
+			//回收站的表格数据
+			$scope.teacherList.tableMsgListRecover = res.data.list;
+			$scope.teachPaginationRecover.totalItems = res.data.count;
+			$scope.state.teachRecoverCount = res.data.count;
+			
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000)
+		} else if(res.ret == 400) {
+			//在线的表格数据
+			$scope.teacherList.tableMsgList = [];
+			$scope.state.teachOnlineCount = 0;
+			$scope.teachPaginationOnline.totalItems = 0;
+			//已停用的表格数据
+			$scope.teacherList.tableMsgListStop = [];
+			$scope.state.teachStopCount = 0;
+			$scope.teachPaginationStop.totalItems = 0;
+			//回收站的表格数据
+			$scope.teacherList.tableMsgListRecover = [];
+			$scope.state.teachRecoverCount = 0;
+			$scope.teachPaginationRecover.totalItems = 0;
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000)
+		}
+	};
+
+	//点击搜索框获取的用户列表
+	$scope.studentOnlineSearch = function() {
+		userParam.keyword = $scope.state.parentOnlineSearch;
+		userParam.pageNo = 1;
+		//清空全选
+		$scope.state.teachOnlineChecked=false;
+		$scope.state.teachStopChecked=false;
+		$scope.state.teachRecoverChecked=false;
+
+		
+		$scope.teacherList.tableMsgList = [];
+		$scope.teacherList.tableMsgListStop = [];
+		$scope.teacherList.tableMsgListRecover = [];
+		
+		$scope.teachPaginationRecover.currentPage=1;
+		$scope.teachPaginationStop.currentPage=1;
+		$scope.teachPaginationOnline.currentPage=1;
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+	}
+	//搜索框回车事件
+	$scope.onlineKeyup = function() {
+		if(event.keyCode == 13) {
+			$scope.studentOnlineSearch();
+		}
+	}
+	
 	//点击hide删除弹窗
 	$scope.gbtc = function() {
 		$scope.state.deletStatus = false;
@@ -112,6 +265,22 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		switch(state) {
 			case 'add':
 				$scope.state.AddState = true;
+				
+				//新增教师弹出页面获取学校列表
+				var oid = JSON.parse(sessionStorage.getItem('userObj')).oid
+				$http.get(requireIp + '/ea/eaOffice/findSchoolInfoByOid?officeId=' + oid).success(function(data) {
+					$scope.school = data.data.school;
+			
+				})
+				//新增教师弹出页面获取角色权限列表
+				$scope.officeId = "";
+				$http.post(requireIp + '/uc/ucRole/findRoleList', {
+					type: '4'
+				}).success(function(res) {
+					$scope.userroles = res.data.findList;
+				})
+				
+				
 				break;
 			case 'cancel':
 				$scope.state.AddState = false;
@@ -171,67 +340,6 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		}
 		$scope.state.deletStatus = true;
 	}
-	//
-	//封装根据不同的选项卡来根据不同的身份传不同的值
-	$scope.getTeaInfo = function(page) {
-		console.info(teachStatus)
-		var stateChange = "";
-		var officeidparm = "";
-		if(scope == 2 || scope == 3) {
-			if($scope.officenewid != oid) {
-				officeidparm = $scope.officenewid;
-			} else {
-				officeidparm = "";
-			}
-		} else if(teachStatus == 15) {
-			officeidparm = oid
-		}
-		//判断切换的是在线还是已停用或者是回收站，改变参数
-		if($scope.state.headTab == 0) {
-			delFlagChange = "0";
-			stateChange = "1"
-		} else if($scope.state.headTab == 2) {
-			delFlagChange = "0";
-			stateChange = "2"
-		} else if($scope.state.headTab == 3) {
-			delFlagChange = "3";
-			stateChange = ""
-		}
-		var pageing = page;
-		var parmas = {
-			userType: '1', //用户类型
-			delFlag: delFlagChange, //在职、删除、停用、回收
-			state: stateChange, //在职
-			pageSize: pageSize,
-			pageNo: pageing,
-			officeId: officeidparm, //学校id
-			areaIds: areaIds,
-			keyword: $scope.onlineKeyword
-		}
-
-		loginService.queryUserList(parmas, function(res) {
-			if(res.ret == 200) {
-				$scope.teacherList.tableMsgList = res.data.list;
-				$scope.teacherList.tableMsgListStop = res.data.list;
-				$scope.teacherList.tableMsgListRecover = res.data.list;
-
-			} else if(res.ret == 400) {
-				$scope.teacherList.tableMsgList = [];
-				$scope.state.teachOnlineCount = 0;
-				$scope.teachPaginationOnline.itemsPerPage = 0;
-
-				$scope.teacherList.tableMsgListStop = [];
-				$scope.state.teachStopCount = 0;
-				$scope.teachPaginationStop.itemsPerPage = 0;
-
-				$scope.teacherList.tableMsgListRecover = [];
-				$scope.state.teachRecoverCount = 0;
-				$scope.teachPaginationRecover.itemsPerPage = 0;
-			}
-		}, function(e) {
-			console.log(e)
-		});
-	}
 
 	//在线教师分页
 	$scope.teachPaginationOnline = {
@@ -247,7 +355,12 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			$scope.state.teachOnlineChecked = false;
 			$scope.state.teachStopChecked = false;
 			$scope.state.teachRecoverChecked = false;
-			$scope.getTeaInfo(currentPage);
+			userParam.pageNo=currentPage;
+			//获取用户列表
+			loginService.queryUserList(userParam, function(res) {
+				$scope.state.lightHome = false;
+				$scope.tabledata(res);
+			})
 		}
 	}
 	//停用账号分页
@@ -262,7 +375,12 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			$scope.state.teachOnlineChecked = false;
 			$scope.state.teachStopChecked = false;
 			$scope.state.teachRecoverChecked = false;
-			$scope.getTeaInfo(currentPage);
+			userParam.pageNo=currentPage;
+			//获取用户列表
+			loginService.queryUserList(userParam, function(res) {
+				$scope.state.lightHome = false;
+				$scope.tabledata(res);
+			})
 		}
 	}
 	//回收分页
@@ -277,7 +395,12 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			$scope.state.teachOnlineChecked = false;
 			$scope.state.teachStopChecked = false;
 			$scope.state.teachRecoverChecked = false;
-			$scope.getTeaInfo(currentPage);
+			userParam.pageNo=currentPage;
+			//获取用户列表
+			loginService.queryUserList(userParam, function(res) {
+				$scope.state.lightHome = false;
+				$scope.tabledata(res);
+			})
 		}
 	};
 
@@ -361,19 +484,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		me.value = '';
 	}
 
-	//新增教师弹出页面获取学校列表
-	var oid = JSON.parse(sessionStorage.getItem('userObj')).oid
-	$http.get(requireIp + '/ea/eaOffice/findSchoolInfoByOid?officeId=' + oid).success(function(data) {
-		$scope.school = data.data.school;
-
-	})
-	//新增教师弹出页面获取角色权限列表
-	$scope.officeId = "";
-	$http.post(requireIp + '/uc/ucRole/findRoleList', {
-		type: '4'
-	}).success(function(res) {
-		$scope.userroles = res.data.findList;
-	})
+	
 
 	//添加教师弹窗页面添加教师操作
 	$scope.addNewTeacher = function() {
@@ -420,16 +531,6 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				officeId: oid,
 				remark: $scope.remarkName
 			}
-			//  		var ridArray = $scope.selected;
-			//	    	var userRole=[];
-			//	    	angular.forEach(ridArray, function (data, index, arry) {
-			//	    		var ridObj ={};
-			//	    		if(data!=undefined&&data!=''){
-			//	    			ridObj.rid = data;
-			//	    			userRole.push(ridObj)
-			//	    		}
-			//	        })
-			//	    	var jsonData = angular.toJson({userInfo:userInfo,roleInfo:userRole})
 			var jsonData = angular.toJson({
 				userInfo: userInfo
 			})
@@ -581,7 +682,6 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			$scope.state.noteContent = '请选择选项';
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.warningShow = true;
-			$scope.TeacherQueryList();
 			$timeout(function() {
 				$scope.state.warningShow = false;
 			}, 1000)
@@ -593,7 +693,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 					ids: $scope.teacherList.teachOnlineArr.join(','),
 					state: 2,
 					delFlag: 0,
-					updateBy: userObjId
+					updateBy: userId
 				};
 				var requestState = onlineState.some(function(v, i) {
 					$scope.state.noteContent = onlineName[i] + '未审核,不能停用';
@@ -612,7 +712,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '停用成功';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -635,7 +735,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 					ids: $scope.teacherList.teachOnlineArr.join(','),
 					state: '',
 					delFlag: '',
-					updateBy: userObjId
+					updateBy: userId
 				}
 				//              objParames.pageNo=1;
 				loginService.batchUpdataUserState(objParames, function(res) {
@@ -680,7 +780,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				var objParames = {
 					ids: $scope.teacherList.teachOnlineArr.join(','),
 					delFlag: 3,
-					updateBy: userObjId
+					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
@@ -699,7 +799,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '用户已成功删除';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -743,14 +843,14 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 					ids: $scope.teacherList.teachStopArr.join(','),
 					state: 1,
 					delFlag: 0,
-					updateBy: userObjId
+					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
 						$scope.state.noteContent = '所选用户已启用';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -773,7 +873,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				var objParames = {
 					ids: $scope.teacherList.teachStopArr.join(','),
 					delFlag: 3,
-					updateBy: userObjId
+					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
@@ -792,7 +892,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '用户已成功删除';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -831,7 +931,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 					ids: $scope.teacherList.teachRecoverArr.join(','),
 					state: '',
 					delFlag: 0,
-					updateBy: userObjId
+					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
@@ -850,7 +950,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '账号已还原成功';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -875,7 +975,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 					state: '',
 					delFlag: 1,
 					userType: '1',
-					updateBy: userObjId
+					updateBy: userId
 				}
 				loginService.batchDeleteUserState(objParames, function(res) {
 					if(res.ret == 200) {
@@ -895,7 +995,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '用户已彻底删除';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-						$scope.TeacherQueryList();
+//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
@@ -916,101 +1016,5 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				break;
 		}
 	}
-	//区域搜索查询
-	$scope.selettypefn = function(officeId) {
 
-		$scope.officenewid = officeId;
-		$scope.onlineKeyword = null;
-		$scope.stopKeyword = null;
-		$scope.recoverKeyword = null;
-		$scope.state.teachOnlineChecked = false;
-		$scope.teacherList.teachOnlineArr = [];
-		$scope.state.teachStopChecked = false;
-		$scope.teacherList.teachStopArr = [];
-		$scope.state.teachRecoverChecked = false;
-		$scope.teacherList.teachRecoverArr = [];
-		$scope.state.searchOfficeId = officeId;
-		$scope.newschoolId = officeId;
-		if($scope.state.headTab == 0) {
-			var keyword = $scope.onlineKeyword;
-			$scope.teachPaginationOnline.currentPage = 1;
-			$scope.onlineSearch(keyword, $scope.state.searchOfficeId);
-		} else if($scope.state.headTab == 2) {
-			var keyword = $scope.stopKeyword;
-			$scope.teachPaginationStop.currentPage = 1;
-			$scope.onlineSearch(keyword, $scope.state.searchOfficeId);
-		} else if($scope.state.headTab == 3) {
-			var keyword = $scope.recoverKeyword;
-			$scope.teachPaginationRecover.currentPage = 1;
-			$scope.onlineSearch(keyword, $scope.state.searchOfficeId);
-		}
-	}
-
-	$scope.TeacherQueryList = function() {
-		var userListParame = {
-			userType: '1', //用户类型
-			keyword: '',
-			delFlag: '', //在职、删除、停用、回收
-			pageSize: pageSize,
-			pageNo: 1,
-			officeId: '', //学校id
-			areaIds: ''
-		}
-		var scope = sessionStorage.getItem("scope");
-		if($scope.newschoolId != '') {
-			userListParame.officeId = $scope.newschoolId;
-		} else {
-			if(scope == '2') {
-				userListParame.areaIds = sessionStorage.getItem('areaId');
-			}
-			if(scope == '3') {
-				areaIds = sessionStorage.getItem('userAreaId');
-				userListParame.areaIds = areaIds;
-				officeId = ''
-			}
-			if(scope == '4') {
-				userListParame.officeId = JSON.parse(sessionStorage.getItem('userObj')).oid;
-			}
-		}
-		if($scope.state.headTab == '0') {
-			userListParame.state = '1';
-			userListParame.delFlag = '0';
-			userListParame.keyword = $scope.onlineKeyword;
-			//在线列表
-			loginService.queryUserList(userListParame, function(res) {
-				$scope.teacherList.tableMsgList = res.data.list;
-				$scope.state.teachOnlineCount = res.data.count;
-				$scope.teachPaginationOnline.totalItems = res.data.count;
-			}, function(e) {
-				console.log(e)
-			});
-		}
-		if($scope.state.headTab == '2') {
-			userListParame.state = '2';
-			userListParame.delFlag = '0';
-			userListParame.keyword = $scope.stopKeyword
-			//停用列表
-			loginService.queryUserList(userListParame, function(res) {
-				$scope.teacherList.tableMsgListStop = res.data.list;
-				$scope.state.teachStopCount = res.data.count;
-				$scope.teachPaginationStop.totalItems = res.data.count;
-			}, function(e) {
-				console.log(e)
-			});
-		}
-		if($scope.state.headTab == '3') {
-			userListParame.delFlag = '3';
-			userListParame.keyword = $scope.recoverKeyword
-			//回收站列表
-			loginService.queryUserList(userListParame, function(res) {
-				$scope.teacherList.tableMsgListRecover = res.data.list;
-				$scope.state.teachRecoverCount = res.data.count;
-				$scope.teachPaginationRecover.totalItems = res.data.count;
-			}, function(e) {
-				console.log(e)
-			});
-		}
-	}
-
-	$scope.TeacherQueryList();
 }])

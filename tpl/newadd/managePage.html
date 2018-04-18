@@ -97,8 +97,8 @@
 			<span class="zy_active">管理者管理</span>
 			<div class="zjy_handle_tab">
 				<strong ng-class="{'active':state.headTab==0}" ng-click="changeTab(0)">已注册</strong>
-				<strong ng-class="{'active':state.headTab==2}" ng-click="changeTab(2)">已停用账号</strong>
-				<strong ng-class="{'active':state.headTab==3}" ng-click="changeTab(3)">回收站</strong>
+				<strong ng-class="{'active':state.headTab==1}" ng-click="changeTab(1)">已停用账号</strong>
+				<strong ng-class="{'active':state.headTab==2}" ng-click="changeTab(2)">回收站</strong>
 			</div>
 		</div>
 		<div class="import_down">
@@ -106,10 +106,12 @@
 				<zjy-address selettypefn="selettypefn" tabflag="0">
 					<zjy-address>
 			</div>
-			<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="onlineResult" data-ng-keypress="onlineKeyup($event,onlineResult,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(onlineResult,state.searchOfficeId)"></span></div>
-			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="stopResult" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
-			<div ng-if="state.headTab==3" class="searchli"><input maxlength="30" type="text" name="" ng-model="recoverResult" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>
-
+			<!--<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="onlineResult" data-ng-keypress="onlineKeyup($event,onlineResult,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(onlineResult,state.searchOfficeId)"></span></div>
+			<div ng-if="state.headTab==1" class="searchli"><input maxlength="30" type="text" name="" ng-model="stopResult" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
+			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="recoverResult" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>-->
+			<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,onlineResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(onlineResult)"></span></div>
+			<div ng-if="state.headTab==1" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
+			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>
 			<!--<span class="import">批量导入管理者<input class="importinp" type="file" accept=".xls,.xlsx" onchange="angular.element(this).scope().fileAction(this)"/></span>
 			<a ng-if="state.addClassList.length" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>-->
 			<!--<a ng-if="!state.addClassList.length" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=tea_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>-->
@@ -156,7 +158,7 @@
 						</div>
 					</div>
 				</div>
-				<div ng-switch-when="2">
+				<div ng-switch-when="1">
 					<div class="handle_head">
 						<ul>
 							<li ng-click="studentStopRenew('renew')">启用</li>
@@ -192,7 +194,7 @@
 						</div>
 					</div>
 				</div>
-				<div ng-switch-when="3">
+				<div ng-switch-when="2">
 					<div class="handle_head">
 						<ul>
 							<li ng-click="studentRecoverRenew('renew')">还原</li>

@@ -77,14 +77,12 @@
  			} else {
  				var userId = sessionStorage.getItem("userId");
  				//通过后台接口添加班级
-// 				 				$http.post(requireIp + "/ea/eaClass/insertClassInGrade", {
    				$http.post(requireIp + "/ea/eaClass/addClass", {
  					gradeId: $scope.gradeId,
  					className: $scope.className,
  					userId: userId
  				}).success(function(res) {
  					if(res.ret == '200') {
- 						
  						$scope.successTips(res);
  					} else {
  						$scope.ErrorTps(res);

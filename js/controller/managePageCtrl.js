@@ -1,10 +1,14 @@
 app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams', '$http', '$filter', 'loginService', function($scope, $state, $timeout, $stateParams, $http, $filter, loginService) {
-
+	
+	var cityId = sessionStorage.getItem("areaId"); //拿到市级ID
+	var countyId = sessionStorage.getItem("userAreaId"); //拿到区县ID
+	var scope = sessionStorage.getItem("scope"); //获取登录人的权限范围
+	
 	var lodingtimout = 1000;
 	$scope.newschoolId = "";
-	var pageSize = 10;
 	$scope.offid = '';
 	$scope.love = false;
+	
 	$scope.state = {
 		headTab: 0, //判断头部选项卡
 		gradeState: 0, //判断年级
@@ -24,6 +28,9 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		repeatstate: false,
 	}
 
+	var pageSize = 10;
+	var userType = 4;
+	
 	if($stateParams.tableChange) {
 		$scope.state.headTab = $stateParams.tableChange;
 	}
@@ -42,118 +49,159 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		tableMsgListStop: [],
 		tableMsgListRecover: []
 	}
-	//声明学校id变量
-	var officeId = null;
-	var areaIds = null;
-	var scope = sessionStorage.getItem('scope');
-	if($scope.state.searchOfficeId != '') {
-		officeId = $scope.state.searchOfficeId;
-	} else {
-		if(scope == '2') {
-			areaIds = sessionStorage.getItem('areaId');
-			officeId = ''
-		}
-		if(scope == '3') {
-			areaIds = sessionStorage.getItem('userAreaId');
-			officeId = ''
-		}
-		if(scope == '4') {
-			if($scope.state.searchOfficeId == '' || $scope.state.searchOfficeId == undefined) {
-				officeId = JSON.parse(sessionStorage.getItem('userObj')).oid;
-				areaIds = '';
-			}
-		}
-	}
-	$scope.ManagerQueryList = function() {
-		var params = {
-			userType: 4,
-			keyword: '',
-			delFlag: '',
-			state: '',
-			officeId: '', //学校id
-			areaIds: '',
-			pageNo: $scope.currentpage,
-			pageSize: pageSize
+	
+		//表格数据填充公用方法
+	$scope.tabledata = function(res) {
+		if(res.ret == 200) {
+			//在线的表格数据
+			$scope.state.lightHome = true;
+			$scope.studentList.tableMsgList = res.data.list;
+			$scope.studentPaginationOnline.totalItems = res.data.count;
+			$scope.state.studentOnlineCount = res.data.count;
+			//已停用的表格数据
 
-		};
-		if($scope.newschoolId != "") {
-			params.officeId = $scope.newschoolId;
-		} else {
-			var scope = sessionStorage.getItem("scope")
-			if(scope == '2') {
-				params.areaIds = sessionStorage.getItem("areaId");
-			}
-			if(scope == '3') {
-				params.areaIds = sessionStorage.getItem("userAreaId");
-			}
-			if(scope == '4') {
-				params.officeId = JSON.parse(sessionStorage.getItem("userObj")).oid;
-			}
+			$scope.studentList.tableMsgListStop = res.data.list;
+			$scope.studentPaginationStop.totalItems = res.data.count;
+			$scope.state.studentStopCount = res.data.count;
+
+			//回收站的表格数据
+			$scope.studentList.tableMsgListRecover = res.data.list;
+			$scope.studentPaginationRecover.totalItems = res.data.count;
+			$scope.state.studentRecoverCount = res.data.count;
+			
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000)
+		} else if(res.ret == 400) {
+			//在线的表格数据
+			$scope.studentList.tableMsgList = [];
+			$scope.state.studentOnlineCount = 0;
+			$scope.studentPaginationOnline.totalItems = 0;
+			//已停用的表格数据
+			$scope.studentList.tableMsgListStop = [];
+			$scope.state.studentStopCount = 0;
+			$scope.studentPaginationStop.totalItems = 0;
+			//回收站的表格数据
+			$scope.studentList.tableMsgListRecover = [];
+			$scope.state.studentRecoverCount = 0;
+			$scope.studentPaginationRecover.totalItems = 0;
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000)
 		}
-		var tableChageItem = sessionStorage.getItem('tableChange');
-		if($scope.state.headTab == 0) {
-			params.state = 1;
-			params.delFlag = 0;
-			params.keyword = $scope.onlineResult;
-			loginService.queryUserList(params, function(res) {
-				$timeout(function() {
-					$scope.state.warningShow = false;
-				}, lodingtimout)
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgList = res.data.list;
-					$scope.studentPaginationOnline.totalItems = res.data.count;
-					$scope.state.studentOnlineCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgList = [];
-					$scope.state.studentOnlineCount = 0;
-					$scope.studentPaginationOnline.totalItems = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
-		}
-		if($scope.state.headTab == 2) {
-			params.state = 2;
-			params.delFlag = 0;
-			params.pageNo = $scope.currentpage;
-			params.keyword = $scope.stopResult;
-			loginService.queryUserList(params, function(res) {
-				$timeout(function() {
-					$scope.state.warningShow = false;
-				}, lodingtimout)
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgListStop = res.data.list;
-					$scope.studentPaginationStop.totalItems = res.data.count;
-					$scope.state.studentStopCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgListStop = [];
-					$scope.state.studentStopCount = 0;
-					$scope.studentPaginationStop.totalItems = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
-		}
-		if($scope.state.headTab == 3) {
-			params.delFlag = 3;
-			params.state = null;
-			params.keyword = $scope.recoverResult;
-			loginService.queryUserList(params, function(res) {
-				$timeout(function() {
-					$scope.state.warningShow = false;
-				}, lodingtimout)
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgListRecover = res.data.list;
-					$scope.studentPaginationRecover.totalItems = res.data.count;
-					$scope.state.studentRecoverCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgListRecover = [];
-					$scope.state.studentRecoverCount = 0;
-					$scope.studentPaginationRecover.totalItems = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
+	};
+	
+	
+	
+	
+	//初始化参数
+	var initialuserParam = {
+		userType:userType,
+		delFlag:0,
+		state:1,
+		pageNo:1,
+		pageSize:pageSize,
+		
+	}
+	
+	var userParam = initialuserParam;
+	
+	if(scope==2){	//市领导
+		initialuserParam.areaId = cityId;
+		userParam = initialuserParam;
+		//一进入页面获取的用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.tabledata(res);
+		})
+	}else if(scope==3){	//区领导
+		initialuserParam.areaId = countyId;
+		userParam = initialuserParam;
+		//一进入页面获取的用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.tabledata(res);
+		})
+	}else{
+		$scope.state.imgNotice = 'img/wonde_big.png';
+			$scope.state.warningShow = true;
+			$scope.state.noteContent = "获取用户权限错误";
+			$timeout(function() {
+				$scope.state.warningShow = false;
+			}, 1000);
+			return false;
+	}
+	
+	
+	//切换选项卡
+	$scope.changeTab = function(state) {
+		sessionStorage.setItem('tableChange', state);
+		$scope.state.headTab = state;
+		$state.go('teacher_index.managePage', {'tableChange': state})
+	}
+	
+	
+	//切换选项卡后给userParam参数赋值
+	if($scope.state.headTab == 0) {
+		
+		} else if($scope.state.headTab == 1) {
+			userParam.state = 2;
+		} else if($scope.state.headTab == 2) {
+			userParam.state = null;
+			userParam.delFlag = 3;
+	}
+
+	//选择学校后获取的用户列表
+	$scope.selettypefn = function(schoolId) {
+		userParam.officeId = schoolId;
+		userParam.pageNo = 1;
+		userParam.gradeId = null;
+		userParam.classId = null;
+		userParam.keyword = null;
+		//清空全选
+		$scope.state.studentOnlineChecked=false;
+		$scope.state.studentStopChecked=false;
+		$scope.state.studentRecoverChecked=false;
+		$scope.studentList.checkboxArr = [];
+		$scope.studentList.checkboxStopArr = [];
+		$scope.studentList.checkboxReArr = [];
+		//选择学校后把搜索框置空
+		$scope.state.parentOnlineSearch = null;
+		//选择学校后把分页置为1
+		$scope.studentPaginationOnline.currentPage=1;
+		$scope.studentPaginationStop.currentPage=1;
+		$scope.studentPaginationRecover.currentPage=1;
+		//获取用户列表
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+	}
+	
+	
+	//点击搜索框获取的用户列表
+	$scope.studentOnlineSearch = function() {
+		userParam.keyword = $scope.state.parentOnlineSearch;
+		userParam.pageNo = 1;
+		//清空全选
+		$scope.state.studentOnlineChecked=false;
+		$scope.state.studentStopChecked=false;
+		$scope.state.studentRecoverChecked=false;
+		
+		$scope.studentList.checkboxArr = [];
+		$scope.studentList.checkboxStopArr = [];
+		$scope.studentList.checkboxReArr = [];
+		
+		$scope.studentPaginationOnline.currentPage=1;
+		$scope.studentPaginationStop.currentPage=1;
+		$scope.studentPaginationRecover.currentPage=1;
+		loginService.queryUserList(userParam, function(res) {
+			$scope.state.lightHome = false;
+			$scope.tabledata(res);
+		})
+	}
+	//搜索框回车事件
+	$scope.onlineKeyup = function() {
+		if(event.keyCode == 13) {
+			$scope.studentOnlineSearch();
 		}
 	}
 
@@ -166,9 +214,9 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		$scope.state.deletStatus = false;
 		if($scope.state.headTab == 0) {
 			$scope.studentOnlineAction('delet');
-		} else if($scope.state.headTab == 2) {
+		} else if($scope.state.headTab == 1) {
 			$scope.studentStopRenew('delet');
-		} else if($scope.state.headTab == 3) {
+		} else if($scope.state.headTab == 2) {
 			$scope.studentRecoverRenew('delet');
 		}
 	}
@@ -214,18 +262,7 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		}
 		$scope.state.deletStatus = true;
 	}
-	//点击头部选项卡
-	$scope.changeTab = function(state) {
-		sessionStorage.setItem('tableChange', state);
-		$scope.currentpage = 1;
-		$scope.state.headTab = state;
-		$state.go('teacher_index.managePage', {
-			'tableChange': state
-		})
-	}
-	$scope.changeSref = function(id) {
-		//      $state.go('teacher_index.manager_updataStudent',{studentCard:id});
-	};
+
 	//点击在线学生全选
 	$scope.onlineCheckAction = function(event) {
 		if($scope.state.studentOnlineChecked) {
@@ -330,49 +367,58 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		switch(state) {
 			case 'add':
 				$scope.state.AddState = true;
+				
+				/**
+				 * 管理角色选择
+				 */
+				$scope.selected = [];
+				$scope.selectedTags = [];
+				var updateSelected = function(action, id, name) {
+					if(action == 'add' && $scope.selected.indexOf(id) == -1) {
+						$scope.selected.push(id);
+						//		   $scope.selectedTags.push(name);
+					}
+					if(action == 'remove' && $scope.selected.indexOf(id) != -1) {
+						var idx = $scope.selected.indexOf(id);
+						$scope.selected.splice(idx, 1);
+						$scope.selectedTags.splice(idx, 1);
+					}
+				}
+				$scope.updateSelection = function($event, id) {
+					var checkbox = $event.target;
+					var action = (checkbox.checked ? 'add' : 'remove');
+					updateSelected(action, id, checkbox.name);
+				}
+				$scope.isSelected = function(id) {
+					return $scope.selected.indexOf(id) >= 0;
+				}
+				//新增管理者弹出页面获取机构列表
+				var areaId = sessionStorage.getItem("areaId");
+				$http.get(requireIp + '/ea/eaOffice?flag=0&&state=1&areaIds=' + areaId).success(function(data) {
+					$scope.sctypes = data.data.schoolList
+			
+				})
+				//新增管理者弹出页面获取角色权限列表
+				$scope.officeId = "";
+				$http.post(requireIp + '/uc/ucRole/findRoleList', {
+					type: '4'
+				}).success(function(res) {
+					$scope.userroles = res.data.findList;
+				})
+				
+				
+				//	//区域搜索查询
+				$scope.selettypefn1 = function(offid) {
+					$scope.offid = offid;
+				}
+				
 				break;
 			case 'cancel':
 				$scope.state.AddState = false;
 				break;
 		}
 	};
-	/**
-	 * 管理角色选择
-	 */
-	$scope.selected = [];
-	$scope.selectedTags = [];
-	var updateSelected = function(action, id, name) {
-		if(action == 'add' && $scope.selected.indexOf(id) == -1) {
-			$scope.selected.push(id);
-			//		   $scope.selectedTags.push(name);
-		}
-		if(action == 'remove' && $scope.selected.indexOf(id) != -1) {
-			var idx = $scope.selected.indexOf(id);
-			$scope.selected.splice(idx, 1);
-			$scope.selectedTags.splice(idx, 1);
-		}
-	}
-	$scope.updateSelection = function($event, id) {
-		var checkbox = $event.target;
-		var action = (checkbox.checked ? 'add' : 'remove');
-		updateSelected(action, id, checkbox.name);
-	}
-	$scope.isSelected = function(id) {
-		return $scope.selected.indexOf(id) >= 0;
-	}
-	//新增管理者弹出页面获取机构列表
-	var areaId = sessionStorage.getItem("areaId");
-	$http.get(requireIp + '/ea/eaOffice?flag=0&&state=1&areaIds=' + areaId).success(function(data) {
-		$scope.sctypes = data.data.schoolList
-
-	})
-	//新增管理者弹出页面获取角色权限列表
-	$scope.officeId = "";
-	$http.post(requireIp + '/uc/ucRole/findRoleList', {
-		type: '4'
-	}).success(function(res) {
-		$scope.userroles = res.data.findList;
-	})
+	
 	//新增管理者弹出页面管理者新增管理提交操作
 	$scope.addNewManaager = function() {
 		var regExp = /^1[34578]\d{9}$/;
@@ -586,8 +632,12 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 
 
 				$scope.newschoolId = $scope.state.searchOfficeId;
-				$scope.currentpage = '1';
-				$scope.ManagerQueryList();
+//				$scope.currentpage = '1';
+				userParam.pageNo=1;
+				loginService.queryUserList(userParam, function(res) {
+					$scope.tabledata(res);
+				})
+
 
 			}
 		}, function(e) {
@@ -638,7 +688,13 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 				$scope.studentPaginationStop.currentPage=1;
 				$scope.studentPaginationRecover.currentPage=1;
 				$scope.currentpage = '1';
-				$scope.ManagerQueryList();
+//				$scope.ManagerQueryList();
+				userParam.pageNo=1;
+				loginService.queryUserList(userParam, function(res) {
+					$scope.tabledata(res);
+				})
+
+
 			}
 
 		}, function(e) {
@@ -684,10 +740,10 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 				$scope.studentList.checkboxReArr = [];
 				$scope.newschoolId = $scope.state.searchOfficeId;
 				$scope.currentpage = '1';
-				$scope.ManagerQueryList();
-				$timeout(function() {
-					$scope.state.warningShow = false;
-				}, lodingtimout)
+				userParam.pageNo=1;
+				loginService.queryUserList(userParam, function(res) {
+					$scope.tabledata(res);
+				})
 			}
 
 		}, function(e) {
@@ -695,28 +751,7 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 		})
 	}
 
-	//点击搜索
-	$scope.studentOnlineSearch = function(searchWord, officeId) {
-		//  	$scope.onlineResult = searchWord;
-		if($scope.state.headTab == 0) {
-			$scope.onlineResult = searchWord;
-		} else if($scope.state.headTab == 2) {
-			$scope.stopResult = searchWord;
-		} else if($scope.state.headTab == 3) {
-			$scope.recoverResult = searchWord;
-		}
 
-		$scope.newschoolId = $scope.state.searchOfficeId;
-		$scope.currentpage = 1;
-		$scope.ManagerQueryList();
-	}
-
-	$scope.onlineKeyup = function(event, key, officeId) {
-		if(event.keyCode == 13) {
-			console.log(key)
-			$scope.studentOnlineSearch(key, officeId)
-		}
-	}
 	//管理者在线分页组件配置
 	$scope.studentPaginationOnline = {
 		currentPage: 1,
@@ -732,28 +767,12 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 			$scope.state.studentOnlineChecked = false;
 			$scope.state.studentStopChecked = false;
 			$scope.state.studentRecoverChecked = false;
-			loginService.queryUserList({
-				userType: '4', //用户类型
-				delFlag: 0,
-				state: 1, //在职
-				keyword: $scope.onlineResult,
-				pageSize: pageSize,
-				pageNo: currentPage,
-				officeId: $scope.newschoolId, //学校id
-				areaIds: areaIds
-			}, function(res) {
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgList = res.data.list;
-					$scope.studentPaginationOnline.totalItems = res.data.count;
-					$scope.state.studentOnlineCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgList = [];
-					$scope.state.teachOnlineCount = 0;
-					$scope.teachPaginationOnline.itemsPerPage = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
+			
+			userParam.pageNo = currentPage;
+			loginService.queryUserList(userParam, function(res) {
+				$scope.tabledata(res);
+			})
+			
 		}
 	}
 	//账号停用分页组件配置
@@ -771,28 +790,11 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 			$scope.state.studentOnlineChecked = false;
 			$scope.state.studentStopChecked = false;
 			$scope.state.studentRecoverChecked = false;
-			loginService.queryUserList({
-				userType: '4', //用户类型
-				delFlag: 0,
-				state: 2, //在职
-				keyword: $scope.stopResult,
-				pageSize: pageSize,
-				pageNo: currentPage,
-				officeId: $scope.newschoolId, //学校id
-				areaIds: areaIds
-			}, function(res) {
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgListStop = res.data.list;
-					$scope.studentPaginationStop.totalItems = res.data.count;
-					$scope.state.studentStopCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgListStop = [];
-					$scope.state.studentStopCount = 0;
-					$scope.studentPaginationStop.itemsPerPage = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
+			
+			userParam.pageNo = currentPage;
+			loginService.queryUserList(userParam, function(res) {
+				$scope.tabledata(res);
+			})
 		}
 	}
 	//回收分页组件配置
@@ -812,65 +814,14 @@ app.controller('managePageCtrl', ['$scope', '$state', '$timeout', '$stateParams'
 			$scope.state.studentOnlineChecked = false;
 			$scope.state.studentStopChecked = false;
 			$scope.state.studentRecoverChecked = false;
-			loginService.queryUserList({
-				userType: '4', //用户类型
-				delFlag: 3,
-				keyword: $scope.recoverResult,
-				pageSize: pageSize,
-				pageNo: currentPage,
-				officeId: $scope.state.searchOfficeId, //学校id
-				areaIds: areaIds
-			}, function(res) {
-				if(res.ret == 200) {
-					$scope.studentList.tableMsgListRecover = res.data.list;
-					$scope.studentPaginationRecover.totalItems = res.data.count;
-					$scope.state.studentRecoverCount = res.data.count;
-				} else if(res.ret == 400) {
-					$scope.studentList.tableMsgListRecover = [];
-					$scope.state.studentRecoverCount = 0;
-					$scope.studentPaginationRecover.itemsPerPage = 0;
-				}
-			}, function(e) {
-				console.log(e)
-			});
+			
+			userParam.pageNo = currentPage;
+			loginService.queryUserList(userParam, function(res) {
+				$scope.tabledata(res);
+			})
+			
 		}
 	};
-	//刷新页面
 
-	$scope.studentOnlineSearch('', '');
-	//区域搜索查询
-	$scope.selettypefn = function(officeId) {
-		$scope.state.studentOnlineChecked = false;
-		$scope.studentList.checkboxArr = [];
-		$scope.state.studentStopChecked = false;
-		$scope.studentList.checkboxStopArr = [];
-		$scope.state.studentRecoverChecked = false;
-		$scope.studentList.checkboxReArr = [];
-
-		$scope.state.studentOnlineChecked = false;
-		$scope.state.studentStopChecked = false;
-		$scope.state.studentRecoverChecked = false;
-		console.log(officeId + "=====================")
-		$scope.newschoolId = officeId;
-		$scope.state.searchOfficeId = officeId;
-		if($scope.state.headTab == 0) {
-			var keyword = $scope.onlineKeyword;
-			$scope.studentPaginationOnline.currentPage = 1;
-			$scope.studentOnlineSearch(keyword, $scope.state.searchOfficeId);
-		} else if($scope.state.headTab == 2) {
-			var keyword = $scope.stopKeyword;
-			$scope.studentPaginationStop.currentPage = 1;
-			$scope.studentOnlineSearch(keyword, $scope.state.searchOfficeId);
-		} else if($scope.state.headTab == 3) {
-			var keyword = $scope.recoverKeyword;
-			$scope.studentPaginationRecover.currentPage = 1;
-			$scope.studentOnlineSearch(keyword, $scope.state.searchOfficeId);
-		}
-	}
-
-	$scope.selettypefn1 = function(offid) {
-		console.log(offid)
-		$scope.offid = offid;
-	}
 
 }])

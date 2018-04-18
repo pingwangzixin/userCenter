@@ -64,6 +64,7 @@ app.controller('xuekeCtrl',['$scope','$timeout','xuekeService','$http','$state',
     
     $scope.showxueduanaction = function(){
 		$scope.state.schoolshowstate = false;
+		$scope.state.subjectstate = false;
 		$scope.changeLevel($scope.state.levelIndex,{name:$scope.state.levelName,id:$scope.state.levelId});
 	}
     
