@@ -106,15 +106,11 @@
 				<zjy-address selettypefn="selettypefn" tabflag="0">
 					<zjy-address>
 			</div>
-			<!--<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="onlineResult" data-ng-keypress="onlineKeyup($event,onlineResult,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(onlineResult,state.searchOfficeId)"></span></div>
-			<div ng-if="state.headTab==1" class="searchli"><input maxlength="30" type="text" name="" ng-model="stopResult" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
-			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="recoverResult" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或手机号" /><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>-->
+			
 			<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,onlineResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(onlineResult)"></span></div>
 			<div ng-if="state.headTab==1" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
 			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>
-			<!--<span class="import">批量导入管理者<input class="importinp" type="file" accept=".xls,.xlsx" onchange="angular.element(this).scope().fileAction(this)"/></span>
-			<a ng-if="state.addClassList.length" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>-->
-			<!--<a ng-if="!state.addClassList.length" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=tea_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>-->
+			
 		</div>
 		<div class="zy_switchCon zjy_teach_handle">
 			<div ng-switch="state.headTab">
@@ -122,7 +118,6 @@
 					<div class="handle_head">
 						<ul>
 							<li ng-click="addOnlineAction('add')">新增</li>
-							<!--<li ng-click="studentOnlineAction('checked')">审核</li>-->
 							<li ng-click="studentOnlineAction('stop')">停用</li>
 							<li ng-click="studentOnlineAction('reset')">重置密码</li>
 							<li ng-click="studentDelet('online')">删除</li>
@@ -140,7 +135,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="tabledata in studentList.tableMsgList">
+								<tr ng-repeat="tabledata in userList.tableMsgList">
 									<td><input type="checkbox" ng-checked="isChecked(tabledata.teaInfo.id)" ng-click="changeOnlineCheck($event,tabledata.teaInfo)" /></td>
 									<td>{{tabledata.teaInfo.realname}} <span ng-if="tabledata.teaInfo.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.teaInfo.state==2" style="color: #8D8D8D;">(已停用)</span></td>
 									<td ng-bind="tabledata.teaInfo.userMobile"></td>
@@ -153,8 +148,8 @@
 							</tbody>
 						</table>
 						<div class="handle_footer">
-							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentOnlineCount"></span>人</span>
-							<zjy-pagination conf="studentPaginationOnline" onSelectStart="return false"></zjy-pagination>
+							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userOnlineCount"></span>人</span>
+							<zjy-pagination conf="userPaginationOnline" onSelectStart="return false"></zjy-pagination>
 						</div>
 					</div>
 				</div>
@@ -177,20 +172,18 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="tabledata in studentList.tableMsgListStop">
+								<tr ng-repeat="tabledata in userList.tableMsgListStop">
 									<td><input type="checkbox" ng-checked="isCheckedStop(tabledata.teaInfo.id)" ng-click="changeStopCheck($event,tabledata.teaInfo.id)" /></td>
 									<td>{{tabledata.teaInfo.realname}} <span ng-if="tabledata.teaInfo.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.teaInfo.state==2" style="color: #8D8D8D;">(已停用)</span></td>
 									<td ng-bind="tabledata.teaInfo.userMobile"></td>
 									<td><span ng-repeat="item in tabledata.roleInfo" style="margin-right: 15px;" ng-bind="item.roleName"></span></td>
-									<td style="cursor: pointer">
-										
-									</td>
+									<td style="cursor: pointer"></td>
 								</tr>
 							</tbody>
 						</table>
 						<div class="handle_footer">
-							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentStopCount"></span>人</span>
-							<zjy-pagination conf="studentPaginationStop" onSelectStart="return false"></zjy-pagination>
+							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userStopCount"></span>人</span>
+							<zjy-pagination conf="userPaginationStop" onSelectStart="return false"></zjy-pagination>
 						</div>
 					</div>
 				</div>
@@ -213,22 +206,19 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="tabledata in studentList.tableMsgListRecover">
+								<tr ng-repeat="tabledata in userList.tableMsgListRecover">
 									<td><input type="checkbox" ng-checked="isCheckedRe(tabledata.teaInfo.id)" ng-click="changeRecoverCheck($event,tabledata.teaInfo.id)" /></td>
 									<td ng-if="false" ng-bind="$index+1"></td>
 									<td>{{tabledata.teaInfo.realname}} <span ng-if="tabledata.teaInfo.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.teaInfo.state==2" style="color: #8D8D8D;">(已停用)</span></td>
 									<td ng-bind="tabledata.teaInfo.userMobile"></td>
 									<td><span ng-repeat="item in tabledata.roleInfo" style="margin-right: 15px;" ng-bind="item.roleName"></span></td>
-									<td style="cursor: pointer">
-										<!--<i class="xiugai_icon" ui-sref="teacher_index.mupdatemanage({teaId:tabledata.teaInfo.id})"></i>-->
-									</td>
-									<!--<td ng-if="true" ng-click="changeSref(tabledata.teaInfo.id)"><i class="xiugai_icon"></i></td>-->
+									<td style="cursor: pointer"></td>
 								</tr>
 							</tbody>
 						</table>
 						<div class="handle_footer">
-							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentRecoverCount"></span>人</span>
-							<zjy-pagination conf="studentPaginationRecover" onSelectStart="return false"></zjy-pagination>
+							<span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userRecoverCount"></span>人</span>
+							<zjy-pagination conf="userPaginationRecover" onSelectStart="return false"></zjy-pagination>
 						</div>
 					</div>
 				</div>

@@ -42,6 +42,7 @@ app.controller('personalManager', ['$scope', 'loginService', '$http', '$statePar
 		userType:$scope.userType
 	}).success(function(data) {
 		$scope.userInfo = data.data.userInfo;
+		$scope.myCroppedImage =data.data.userInfo.userFace
 		$http.post(requireIp + '/ea/eaOffice/findSchoolInfoByAreaId', {
 			areaId: $scope.userInfo.areaId
 //			,grade: "8"
@@ -107,15 +108,15 @@ app.controller('personalManager', ['$scope', 'loginService', '$http', '$statePar
 
 	}
 
-	//获取学生信息
-	loginService.studentMsg({
-		userId: $scope.userId,
-		userType: $scope.userType
-	}, function(res) {
-
-		$scope.user.id = res.data.stuInfo.id; //学生id
-		$scope.user.realname = res.data.stuInfo.realname; //学生姓名
-	}, function(e) {})
+//	//获取学生信息
+//	loginService.studentMsg({
+//		userId: $scope.userId,
+//		userType: $scope.userType
+//	}, function(res) {
+//
+//		$scope.user.id = res.data.stuInfo.id; //学生id
+//		$scope.user.realname = res.data.stuInfo.realname; //学生姓名
+//	}, function(e) {})
 	//获取民族
 	$http.get("file/nation.json").success(function(data) {
 		$scope.nationData = data.data;
@@ -234,10 +235,23 @@ app.controller('personalManager', ['$scope', 'loginService', '$http', '$statePar
                                 $(".tijiaocgtc .gy_con p i").html("提交成功");
                                 setTimeout(function() {
                                     $(".tijiaocgtc").hide();
+                                    
+                                    //获取个人信息
+									$http.post(requireIp + '/uc/ucUser/findUserInfoUserId', {
+										userId:$scope.userId,
+										userType:$scope.userType
+									}).success(function(data) {
+										$scope.userInfo = data.data.userInfo;
+										$scope.myCroppedImage =data.data.userInfo.userFace;
+
+									
+									}).error(function(e) {});
+                                    
                                     $state.go('teacher_index.teacher_center', {
                                         username: sessionStorage.getItem('userName')
-                                    });
-                                }, 1500);
+                                    },{reload: true});
+                                }, 3000);
+                                
                             }else{
                                 $(".tijiaosbtc").show();
                                 $(".tijiaosbtc .gy_con p i").html("上传失败");

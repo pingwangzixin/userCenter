@@ -1,7 +1,6 @@
 
 //导入也得改
-//var requireIp = 'http://111.207.13.88:8881/jeuc/api';
-var requireIp = 'http://192.168.9.60:8080/jeuc/api';
+var requireIp = 'http://111.207.13.88:8881/jeuc/api';
 var token = '29B5DF07F7FC514807CE5FBC12EA1506';
 //修改手机号 密码 跳转地址
 var homeAddress = 'http://111.207.13.88:8883/#/wrap/index?state=1';
@@ -64,18 +63,6 @@ app.service('loginService',['$http','$timeout',function($http,$timeout) {
 			error(e)
 		})
 	}
-	//通过家长id获取孩子信息
-	this.parentChildMsg = function(pid,succ,error) {
-		$http.post(requireIp+'/UcUser/findChildUcUserByUId',pid)
-		.success(function(res) {
-			succ(res)
-		})
-		.error(function(e) {
-			error(e)
-		})
-	}
-	
-
 
 	//请求教师管理-审核、删除、回收、停用等接口
 	this.teachHandleUpdataList = function(parames,succ,error) {
@@ -91,16 +78,6 @@ app.service('loginService',['$http','$timeout',function($http,$timeout) {
 	//通过学校id获取年级
 	this.studentHandleGradeList = function(parames,succ,error) {
 		$http.post(requireIp+'/ea/eaGrade/findGradeInfoByOid',parames)
-		.success(function(res){
-			succ(res)
-		})
-		.error(function(e){
-			error(e)
-		})
-	}
-	//通过学校id获取学校信息
-	this.getSchoolInfoData = function(parames,succ,error){
-		$http.post(requireIp+'/ea/eaOfficeWeb/getSchoolById',parames)
 		.success(function(res){
 			succ(res)
 		})

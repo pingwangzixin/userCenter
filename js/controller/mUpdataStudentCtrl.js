@@ -407,6 +407,10 @@ app.controller("mUpdataStudentCtrl", ['$scope', '$http', '$stateParams', 'loginS
 			console.log(newfenzulist)
 			console.log($scope.fez)
 			$scope.love=true;
+			if($scope.userNation==null){
+				$scope.userNation="";
+			}
+			
 			$http.post(requireIp + '/uc/ucUser/updateStuInfoByTea', {
 				id: $scope.user.id,
 				stuNo: $scope.stuNo,

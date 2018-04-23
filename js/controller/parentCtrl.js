@@ -248,8 +248,8 @@ app.controller('parentCtrl', ['$scope', '$http', '$stateParams', '$state', funct
                                     $(".tijiaocgtc").hide();
                                     $state.go('teacher_index.teacher_center', {
                                         username: sessionStorage.getItem('userName')
-                                    });
-                                }, 1500);
+                                    },{reload: true});
+                                }, 3000);
                             }else{
                                 $(".tijiaosbtc").show();
                                 $(".tijiaosbtc .gy_con p i").html("上传失败");

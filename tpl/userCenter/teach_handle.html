@@ -4,11 +4,6 @@
 		height: 587px;
 	}
 	
-	/*.wx_ul {
-		width: 490px;
-		display: inline-block;
-		margin-left:10px;
-	}*/
 	.wx_ul {
 		width: 470px;
 		display: inline-block;
@@ -80,7 +75,6 @@
 </style>
 <div class="zy_main">
 	<div class="wx_fanhui">
-			<!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
 		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
 	</div>
 	<div class="zy_cont">
@@ -100,9 +94,7 @@
 			<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,onlineResult)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="studentOnlineSearch(onlineResult)"></span></div>
 			<div ng-if="state.headTab==1" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,stopResult)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="studentOnlineSearch(stopResult)"></span></div>
 			<div ng-if="state.headTab==2" class="searchli"><input maxlength="30" type="text" name="" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,recoverResult)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="studentOnlineSearch(recoverResult)"></span></div>
-			<!--<div ng-if="state.headTab==0" class="searchli" ng-class="{'searchli1':state.usertypestate==1}"><input maxlength="30" type="text" name="" ng-model="onlineKeyword" ng-keypress="onlineKeyup($event,onlineKeyword,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="onlineSearch(onlineKeyword,state.searchOfficeId)"></span></div>
-			<div ng-if="state.headTab==1" class="searchli" ng-class="{'searchli1':state.usertypestate==1}"><input maxlength="30" type="text" name="" ng-model="stopKeyword" ng-keypress="onlineKeyup($event,stopKeyword,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="onlineSearch(stopKeyword,state.searchOfficeId)"></span></div>
-			<div ng-if="state.headTab==2" class="searchli" ng-class="{'searchli1':state.usertypestate==1}"><input maxlength="30" type="text" ng-model="recoverKeyword" ng-keypress="onlineKeyup($event,recoverKeyword,state.searchOfficeId)" ng-trim="true" placeholder="请输入姓名或手机号"/><span class="handle_search" ng-click="onlineSearch(recoverKeyword,state.searchOfficeId)"></span></div>-->
+			
 			<span ng-hide="state.scopestate==2||state.scopestate==3" class="import">批量导入教师<input class="importinp" type="file" accept=".xls,.xlsx" onchange="angular.element(this).scope().fileAction(this)"/></span>
 			<a ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_tea_2_1.xlsx" ng-hide="state.scopestate==2||state.scopestate==3">
 				<span class="downexcel">下载导入表格</span>
@@ -114,18 +106,12 @@
                     <div class="handle_head">
                         <ul>
                         	<li ng-hide="state.scopestate==2||state.scopestate==3" ng-click="addOnlineActionTea('add')">新增</li>
-                            <!--<li ng-click="teachEventHandle('check')">审核</li>-->
                             <li ng-click="teachEventHandle('stop')">停用</li>
                             <li ng-click="teachEventHandle('passReset')">重置密码</li>
                             <li ng-click="teachDelet('online')">删除</li>
                         </ul>
                     </div>
-                    <!--<div class="addStudentInfo" ng-if="state.AddState">
-                    	<p onselectstart="return false;"><label for="infoName">教师姓名</label><input maxlength="30" id="infoName" type="text" placeholder="输入教师姓名" ng-trim="true" ng-model="state.addTeaName"/></p>
-                    	<p onselectstart="return false;"><label for="infoNumber">手机号</label><input maxlength="30" id="infoNumber" type="number" ng-trim="true" ng-model="state.addTeaTel" placeholder="输入手机号" /></p>
-                    	<p onselectstart="return false;" class="right" ng-click="sureAddTeach(state.addTeaName,state.addTeaTel)">✔</p>
-                    	<p onselectstart="return false;" class="right error" ng-click="addOnlineActionTea('cancel')">✘</p>
-                    </div>-->
+                   
                     <div class="handle_table">
                         <table>
                             <thead>
@@ -138,12 +124,12 @@
                                     <th width="20%">角色权限</th>
                                     <th ng-if="false" width="18%">学校名称</th>
                                     <th ng-if="false" width="17%">身份证号</th>
-                                    <!--<th width="6%">状态</th>-->
+                          
                                     <th width="2%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in teacherList.tableMsgList">
+                                <tr ng-repeat="tabledata in userList.tableMsgList">
                                     <td><input type="checkbox" ng-checked="isOnlineChecked(tabledata.teaInfo.id)" ng-click="changeOnlineChecked($event,tabledata.teaInfo)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.id" ng-show="{{false}}"></td>
@@ -157,8 +143,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.teachOnlineCount"></span>人</span> 
-                           <zjy-pagination conf="teachPaginationOnline" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userOnlineCount"></span>人</span> 
+                           <zjy-pagination conf="userPaginationOnline" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -181,12 +167,12 @@
                                     <th width="20%">角色权限</th>
                                     <th ng-if="false" width="18%">学校名称</th>
                                     <th ng-if="false" width="17%">身份证号</th>
-                                    <!--<th width="9%">状态</th>-->
+                     
                                     <th width="2%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in teacherList.tableMsgListStop">
+                                <tr ng-repeat="tabledata in userList.tableMsgListStop">
                                     <td><input type="checkbox" ng-checked="isStopChecked(tabledata.teaInfo.id)" ng-click="changeStopChecked($event,tabledata.teaInfo.id)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.id" ng-show="{{false}}"></td>
@@ -195,14 +181,14 @@
                                     <td style="padding:0"><span class="roleUser" style="line-height: 20px;" ng-repeat="k in tabledata.roleInfo track by $index">{{k.roleName}}</span></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.officeName"></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.idCard"></td>
-                                    <!--<td><span ng-show="tabledata.state==1">已审核</span><span ng-show="tabledata.state==0">未审核</span></td>-->
+                                    
                                     <td style="cursor: pointer"></td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.teachStopCount"></span>人</span> 
-                           <zjy-pagination conf="teachPaginationStop" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userStopCount"></span>人</span> 
+                           <zjy-pagination conf="userPaginationStop" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -230,7 +216,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in teacherList.tableMsgListRecover">
+                                <tr ng-repeat="tabledata in userList.tableMsgListRecover">
                                     <td><input type="checkbox" ng-checked="isRecovereChecked(tabledata.teaInfo.id)" ng-click="changeRecoverChecked($event,tabledata.teaInfo.id)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.id" ng-show="{{false}}"></td>
@@ -239,14 +225,14 @@
                                     <td style="padding:0"><span class="roleUser" style="line-height: 20px;" ng-repeat="k in tabledata.roleInfo track by $index">{{k.roleName}}</span></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.officeName"></td>
                                     <td ng-if="false" ng-bind="tabledata.teaInfo.idCard"></td>
-                                    <!--<td><span ng-show="tabledata.state==state.testShow">已审核</span><span ng-hide="tabledata.state==state.testShow">未审核</span></td>-->
+                                  
                                     <td style="cursor: pointer"></td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.teachRecoverCount"></span>人</span> 
-                            <zjy-pagination conf="teachPaginationRecover" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userRecoverCount"></span>人</span> 
+                            <zjy-pagination conf="userPaginationRecover" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>

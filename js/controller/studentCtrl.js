@@ -455,16 +455,19 @@ app.controller('studentCtrl', ['$scope', 'loginService', '$http', '$stateParams'
                                 $(".tijiaocgtc .gy_con p i").html("提交成功");
                                 setTimeout(function() {
                                     $(".tijiaocgtc").hide();
+                                    
+                                    
+                                    
                                     $state.go('teacher_index.teacher_center', {
                                         username: sessionStorage.getItem('userName')
-                                    });
+                                    },{reload: true});
                                 }, 1500);
                             }else{
                                 $(".tijiaosbtc").show();
                                 $(".tijiaosbtc .gy_con p i").html("上传失败");
                                 setTimeout(function() {
                                     $(".tijiaosbtc").hide();
-                                }, 1500)
+                                }, 3000)
                             }
                         }, false);
                         return xhr;

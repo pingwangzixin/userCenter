@@ -14,7 +14,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		allStopchecked: false, //家长注册-判断是否选中
 		allcheckedRecover: false, //回收-判断是否选中
 		warningShow: false,
-		parentsOnlineCount: 0,
+		userOnlineCount: 0,
 		deletStatus: false,
 		imgNotice: 'img/wonde_big.png',
 		sureDeletContent: '确认删除所选家长？',
@@ -75,7 +75,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 				$scope.params.officeId = $scope.state.oid;
 				loginService.studentHandleGradeList({officeId: $scope.params.officeId}, function(res) {
 					if(res.ret == "200") {
-						$scope.parentsList.gradeList = res.data;
+						$scope.userList.gradeList = res.data;
 					}
 				})
 				break;
@@ -113,19 +113,19 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	//关键字查询
 	$scope.parentSearch = function(searchWord) {
 		$scope.state.allchecked = false;
-		$scope.parentsList.checkboxArr = [];
+		$scope.userList.checkboxArr = [];
 		$scope.state.allStopchecked = false;
 		$scope.state.allcheckedRecover=false;
 		$scope.state.allStopchecked=false;
 		$scope.state.allchecked=false;
-		$scope.parentsList.checkboxStopArr = [];
+		$scope.userList.checkboxStopArr = [];
 		$scope.state.allcheckedRecover = false;
-		$scope.parentsList.checkboxReArr = [];
+		$scope.userList.checkboxReArr = [];
 		$scope.params.keyword = searchWord;
 		$scope.params.pageNo=1;
-		$scope.parentPaginationOnline.currentPage=1;
-		$scope.parentPaginationStop.currentPage=1;
-		$scope.parentPaginationRecover.currentPage=1;
+		$scope.userPaginationOnline.currentPage=1;
+		$scope.userPaginationStop.currentPage=1;
+		$scope.userPaginationRecover.currentPage=1;
 		$scope.getParentList();
 	}
 	//按键搜索
@@ -147,18 +147,18 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		$scope.state.parentRecoverSearch=null;
 		$scope.state.allStopchecked=null;
 		$scope.state.allchecked=false;
-		$scope.parentsList.checkboxArr = [];
-		$scope.parentsList.checkboxStopArr = [];
-		$scope.parentsList.checkboxReArr = [];
-		$scope.parentPaginationOnline.currentPage=1;
-		$scope.parentPaginationStop.currentPage=1;
-		$scope.parentPaginationRecover.currentPage=1;
+		$scope.userList.checkboxArr = [];
+		$scope.userList.checkboxStopArr = [];
+		$scope.userList.checkboxReArr = [];
+		$scope.userPaginationOnline.currentPage=1;
+		$scope.userPaginationStop.currentPage=1;
+		$scope.userPaginationRecover.currentPage=1;
 		$scope.state.classState=null;
 		$scope.state.parentOnlineSearch = null;
 		$scope.getParentList();
 		loginService.studentHandleGradeList({officeId: schoolId}, function(res) {
 			if(res.ret == "200") {
-				$scope.parentsList.gradeList = res.data;
+				$scope.userList.gradeList = res.data;
 			}
 		})
 	}
@@ -174,18 +174,18 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			$scope.state.allcheckedRecover=false;
 			$scope.state.allStopchecked=false;
 			$scope.state.allchecked=false;
-			$scope.parentsList.checkboxArr = [];
-			$scope.parentsList.checkboxStopArr = [];
-			$scope.parentsList.checkboxReArr = [];
-			$scope.parentPaginationOnline.currentPage=1;
-			$scope.parentPaginationStop.currentPage=1;
-			$scope.parentPaginationRecover.currentPage=1;
+			$scope.userList.checkboxArr = [];
+			$scope.userList.checkboxStopArr = [];
+			$scope.userList.checkboxReArr = [];
+			$scope.userPaginationOnline.currentPage=1;
+			$scope.userPaginationStop.currentPage=1;
+			$scope.userPaginationRecover.currentPage=1;
 			$scope.state.parentOnlineSearch = null;
 			$scope.getParentList();
 			loginService.studentHandleClassList({officeId:$scope.params.officeId,gradeId:$scope.state.gradeState}, function(res) {
 			if(res.ret == "200") {
-				$scope.parentsList.classList = res.data;
-				$scope.parentsList.classList.forEach(function(v) {
+				$scope.userList.classList = res.data;
+				$scope.userList.classList.forEach(function(v) {
 					v.name = v.name + '班'
 				});
 			}
@@ -201,12 +201,12 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		$scope.state.allcheckedRecover=false;
 		$scope.state.allStopchecked=false;
 		$scope.state.allchecked=false;
-		$scope.parentsList.checkboxArr = [];
-		$scope.parentsList.checkboxStopArr = [];
-		$scope.parentsList.checkboxReArr = [];
-		$scope.parentPaginationOnline.currentPage=1;
-		$scope.parentPaginationStop.currentPage=1;
-		$scope.parentPaginationRecover.currentPage=1;
+		$scope.userList.checkboxArr = [];
+		$scope.userList.checkboxStopArr = [];
+		$scope.userList.checkboxReArr = [];
+		$scope.userPaginationOnline.currentPage=1;
+		$scope.userPaginationStop.currentPage=1;
+		$scope.userPaginationRecover.currentPage=1;
 		$scope.state.parentOnlineSearch = null;
 		$scope.getParentList();
 	}
@@ -251,7 +251,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 				$scope.state.warningShow = false;
 			}, 1000);
 			return false;
-		} else if($scope.user.stuName == '') {
+		} else if($scope.user.stuName == ''||$scope.user.stuName==null) {
 			$scope.state.warningShow = true;
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.noteContent = '请输入学生姓名!';
@@ -306,7 +306,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		$scope.state.deletStatus = false;
 		if($scope.state.headTab == 0) {
 			var params = {
-				ids: $scope.parentsList.checkboxArr.join(','),
+				ids: $scope.userList.checkboxArr.join(','),
 				delFlag: 3,
 				updateBy: $scope.state.userId
 			}
@@ -319,13 +319,13 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 					
 					//分页回到第一页
 					$scope.params.pageNo=1;
-					$scope.parentPaginationOnline.currentPage=1;
-					$scope.parentPaginationStop.currentPage=1;
-					$scope.parentPaginationRecover.currentPage=1;
+					$scope.userPaginationOnline.currentPage=1;
+					$scope.userPaginationStop.currentPage=1;
+					$scope.userPaginationRecover.currentPage=1;
 					
 					
-					$scope.parentsList.checkboxArr = [];
-					$scope.parentsList.checkboxReArr = [];
+					$scope.userList.checkboxArr = [];
+					$scope.userList.checkboxReArr = [];
 					var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 					$scope.getParentList();
 					$scope.msgTip();
@@ -340,7 +340,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	}
 	
 	$scope.parentRecoverAction = function(change) {
-		if(!$scope.parentsList.checkboxReArr.length) {
+		if(!$scope.userList.checkboxReArr.length) {
 			$scope.state.warningShow = true;
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.noteContent = '请至少选择一项!';
@@ -348,7 +348,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			return false
 		}
 		var params = {
-					ids: $scope.parentsList.checkboxReArr.join(','),
+					ids: $scope.userList.checkboxReArr.join(','),
 					delFlag: 0,
 					updateBy: $scope.state.userId
 				}
@@ -367,13 +367,13 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			if(res.ret == 200) {
 				$scope.state.warningShow = true;
 				$scope.state.allcheckedRecover = false;
-				$scope.parentsList.checkboxArr = [];
-				$scope.parentsList.checkboxReArr = [];
+				$scope.userList.checkboxArr = [];
+				$scope.userList.checkboxReArr = [];
 				//分页回到第一页
 				$scope.params.pageNo=1;
-				$scope.parentPaginationOnline.currentPage=1;
-				$scope.parentPaginationStop.currentPage=1;
-				$scope.parentPaginationRecover.currentPage=1;
+				$scope.userPaginationOnline.currentPage=1;
+				$scope.userPaginationStop.currentPage=1;
+				$scope.userPaginationRecover.currentPage=1;
 				
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 				$scope.getParentList();
@@ -423,7 +423,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	}
 	//审核、停用 重置密码
 	$scope.parentonlineAction = function(state) {
-		if(!$scope.parentsList.checkboxArr.length) {
+		if(!$scope.userList.checkboxArr.length) {
 			$scope.state.warningShow = true;
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.noteContent = '请至少选择一项!';
@@ -431,7 +431,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			return false;
 		};
 		var params = {
-					ids: $scope.parentsList.checkboxArr.join(','),
+					ids: $scope.userList.checkboxArr.join(','),
 					delFlag: 0,
 					state: 1,
 					updateBy: $scope.state.userId
@@ -469,12 +469,12 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			if(res.ret == 200){
 				$scope.state.warningShow = true;
 				$scope.state.allchecked = false;
-				$scope.parentsList.checkboxArr = [];
+				$scope.userList.checkboxArr = [];
 				
 				$scope.params.pageNo=1;
-				$scope.parentPaginationOnline.currentPage=1;
-				$scope.parentPaginationStop.currentPage=1;
-				$scope.parentPaginationRecover.currentPage=1;
+				$scope.userPaginationOnline.currentPage=1;
+				$scope.userPaginationStop.currentPage=1;
+				$scope.userPaginationRecover.currentPage=1;
 				
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 				$scope.getParentList();
@@ -487,7 +487,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	
 	//家长停用内的 启用 删除
 	$scope.parentStopAction = function(state) {
-		if(!$scope.parentsList.checkboxStopArr.length) {
+		if(!$scope.userList.checkboxStopArr.length) {
 			$scope.state.warningShow = true;
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.noteContent = '请至少选择一项!';
@@ -498,7 +498,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			return false;
 		};
 		var params = {
-						ids: $scope.parentsList.checkboxStopArr.join(','),
+						ids: $scope.userList.checkboxStopArr.join(','),
 						delFlag: 0,
 						state: 1,
 						updateBy: $scope.state.userId
@@ -519,14 +519,14 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			if(res.ret == 200) {
 				$scope.state.warningShow = true;
 				$scope.state.allchecked = false;
-				$scope.parentsList.checkboxArr = [];
+				$scope.userList.checkboxArr = [];
 				$scope.state.allStopchecked =false;
 				
 				
 				$scope.params.pageNo=1;
-				$scope.parentPaginationOnline.currentPage=1;
-				$scope.parentPaginationStop.currentPage=1;
-				$scope.parentPaginationRecover.currentPage=1;
+				$scope.userPaginationOnline.currentPage=1;
+				$scope.userPaginationStop.currentPage=1;
+				$scope.userPaginationRecover.currentPage=1;
 				
 				var classState = $scope.state.classState == 'all' ? null : $scope.state.classState;
 				
@@ -540,7 +540,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	$scope.parentDeleAction = function(status) {
 		switch(status) {
 			case 'online':
-				if(!$scope.parentsList.checkboxArr.length) {
+				if(!$scope.userList.checkboxArr.length) {
 					$scope.state.warningShow = true;
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.noteContent = '请至少选择一项!';
@@ -550,7 +550,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 				$scope.state.sureDeletContent = '确认删除所选家长？'
 				break;
 			case 'stop':
-				if(!$scope.parentsList.checkboxStopArr.length) {
+				if(!$scope.userList.checkboxStopArr.length) {
 					$scope.state.warningShow = true;
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.noteContent = '请至少选择一项!';
@@ -560,7 +560,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 				$scope.state.sureDeletContent = '确认删除所选家长？'
 				break;
 			case 'recover':
-				if(!$scope.parentsList.checkboxReArr.length) {
+				if(!$scope.userList.checkboxReArr.length) {
 					$scope.state.warningShow = true;
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.noteContent = '请至少选择一项!';
@@ -573,7 +573,7 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		$scope.state.deletStatus = true;
 	}
 		//模拟数据
-	$scope.parentsList = {
+	$scope.userList = {
 		checkboxArr: [],
 		checkboxStopArr: [],
 		checkboxReArr: [],
@@ -583,38 +583,39 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 		tableMsgStop: [],
 		tableMsgListRecover: [],
 	}
+	
 		//表格数据填充公用方法
 	$scope.tabledata = function(res) {
 		if(res.ret == 200) {
 			$scope.state.lightHome=true;
 			//在线的表格数据
-			$scope.parentsList.tableMsgList = res.data.list;
-			$scope.parentPaginationOnline.totalItems = res.data.count;
-			$scope.state.parentsOnlineCount = res.data.count;
+			$scope.userList.tableMsgList = res.data.list;
+			$scope.userPaginationOnline.totalItems = res.data.count;
+			$scope.state.userOnlineCount = res.data.count;
 			//已停用的表格数据
-			$scope.parentsList.tableMsgStop = res.data.list;
-			$scope.parentPaginationStop.totalItems = res.data.count;
-			$scope.state.parentsStopCount = res.data.count;
+			$scope.userList.tableMsgStop = res.data.list;
+			$scope.userPaginationStop.totalItems = res.data.count;
+			$scope.state.userStopCount = res.data.count;
 			//回收站的表格数据
-			$scope.parentsList.tableMsgListRecover = res.data.list;
-			$scope.parentPaginationRecover.totalItems = res.data.count;
-			$scope.state.parentsRecoverCount = res.data.count;
+			$scope.userList.tableMsgListRecover = res.data.list;
+			$scope.userPaginationRecover.totalItems = res.data.count;
+			$scope.state.userRecoverCount = res.data.count;
 		} else if(res.ret == 400) {
 			//在线的表格数据
-			$scope.parentsList.tableMsgList = [];
-			$scope.state.parentsOnlineCount = 0;
-			$scope.parentPaginationOnline.totalItems = 0;
+			$scope.userList.tableMsgList = [];
+			$scope.state.userOnlineCount = 0;
+			$scope.userPaginationOnline.totalItems = 0;
 			//已停用的表格数据
-			$scope.parentsList.tableMsgStop = [];
-			$scope.state.parentsStopCount = 0;
-			$scope.parentPaginationStop.totalItems = 0;
+			$scope.userList.tableMsgStop = [];
+			$scope.state.userStopCount = 0;
+			$scope.userPaginationStop.totalItems = 0;
 			//回收站的表格数据
-			$scope.parentsList.tableMsgListRecover = [];
-			$scope.state.parentsRecoverCount = 0;
-			$scope.parentPaginationRecover.totalItems = 0;
+			$scope.userList.tableMsgListRecover = [];
+			$scope.state.userRecoverCount = 0;
+			$scope.userPaginationRecover.totalItems = 0;
 		}
 	};
-	$scope.parentPaginationOnline = {
+	$scope.userPaginationOnline = {
 		currentPage: 1,
 		// totalItems: 100  ,
 		pagesLength: 9,
@@ -625,14 +626,14 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			$scope.state.allcheckedRecover=false;
 			$scope.state.allStopchecked=false;
 			$scope.state.allchecked=false;
-			$scope.parentsList.checkboxArr = [];
-			$scope.parentsList.checkboxStopArr = [];
-			$scope.parentsList.checkboxReArr = [];
+			$scope.userList.checkboxArr = [];
+			$scope.userList.checkboxStopArr = [];
+			$scope.userList.checkboxReArr = [];
 			$scope.getParentList();
 		}
 	}
 	//停用组件配置
-	$scope.parentPaginationStop = {
+	$scope.userPaginationStop = {
 		currentPage: 1,
 		// totalItems: 100  ,
 		pagesLength: 9,
@@ -643,14 +644,14 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			$scope.state.allcheckedRecover=false;
 			$scope.state.allStopchecked=false;
 			$scope.state.allchecked=false;
-			$scope.parentsList.checkboxArr = [];
-			$scope.parentsList.checkboxStopArr = [];
-			$scope.parentsList.checkboxReArr = [];
+			$scope.userList.checkboxArr = [];
+			$scope.userList.checkboxStopArr = [];
+			$scope.userList.checkboxReArr = [];
 			$scope.getParentList();
 		}
 	}
 		//回收站分页
-	$scope.parentPaginationRecover = {
+	$scope.userPaginationRecover = {
 		currentPage: 1,
 		totalItems: 10,
 		pagesLength: 9,
@@ -661,9 +662,9 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 			$scope.state.allcheckedRecover=false;
 			$scope.state.allStopchecked=false;
 			$scope.state.allchecked=false;
-			$scope.parentsList.checkboxArr = [];
-			$scope.parentsList.checkboxStopArr = [];
-			$scope.parentsList.checkboxReArr = [];
+			$scope.userList.checkboxArr = [];
+			$scope.userList.checkboxStopArr = [];
+			$scope.userList.checkboxReArr = [];
 			$scope.getParentList();
 		}
 	};
@@ -672,14 +673,14 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	//点击注册家长全选
 	$scope.clickallCheck = function(event) {
 		if($scope.state.allchecked) {
-			$scope.parentsList.checkboxArr = [];
-			$scope.parentsList.tableMsgList.forEach(function(v) {
-				$scope.parentsList.checkboxArr.push(v.id);
+			$scope.userList.checkboxArr = [];
+			$scope.userList.tableMsgList.forEach(function(v) {
+				$scope.userList.checkboxArr.push(v.id);
 				onlineState.push(v.state);
 				onlineName.push(v.prarentsName);
 			})
 		} else {
-			$scope.parentsList.checkboxArr = [];
+			$scope.userList.checkboxArr = [];
 			onlineState = [];
 			onlineName = [];
 		}
@@ -687,53 +688,53 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	//点击停用全选
 	$scope.clickStopCheck = function(event) {
 		if($scope.state.allStopchecked) {
-			$scope.parentsList.checkboxStopArr = [];
-			$scope.parentsList.tableMsgStop.forEach(function(v) {
-				$scope.parentsList.checkboxStopArr.push(v.id);
+			$scope.userList.checkboxStopArr = [];
+			$scope.userList.tableMsgStop.forEach(function(v) {
+				$scope.userList.checkboxStopArr.push(v.id);
 			})
 		} else {
-			$scope.parentsList.checkboxStopArr = [];
+			$scope.userList.checkboxStopArr = [];
 		}
 	}
 	//点击回收站全选
 	$scope.clickRecoverCheck = function(event) {
 		if($scope.state.allcheckedRecover) {
-			$scope.parentsList.checkboxReArr = [];
-			$scope.parentsList.tableMsgListRecover.forEach(function(v) {
-				$scope.parentsList.checkboxReArr.push(v.id)
+			$scope.userList.checkboxReArr = [];
+			$scope.userList.tableMsgListRecover.forEach(function(v) {
+				$scope.userList.checkboxReArr.push(v.id)
 			})
 		} else {
-			$scope.parentsList.checkboxReArr = [];
+			$scope.userList.checkboxReArr = [];
 		}
 	}
 	//家长注册单选的选中状态
 	$scope.isChecked = function(id) {
-		return $scope.parentsList.checkboxArr.indexOf(id) >= 0
+		return $scope.userList.checkboxArr.indexOf(id) >= 0
 	}
 	//家长停用单选的选中状态
 	$scope.isStopChecked = function(id) {
-		return $scope.parentsList.checkboxStopArr.indexOf(id) >= 0
+		return $scope.userList.checkboxStopArr.indexOf(id) >= 0
 	}
 	//回收站单选的选中状态
 	$scope.isCheckedRecover = function(id) {
-		return $scope.parentsList.checkboxReArr.indexOf(id) >= 0
+		return $scope.userList.checkboxReArr.indexOf(id) >= 0
 	}
 	//家长注册点击单个checkbox
 	$scope.changeCheckbox = function(event, item) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.parentsList.checkboxArr.indexOf(item.id) == -1) {
-			$scope.parentsList.checkboxArr.push(item.id);
+		if(action == 'add' && $scope.userList.checkboxArr.indexOf(item.id) == -1) {
+			$scope.userList.checkboxArr.push(item.id);
 			//      	onlineState.push(v.state);
 			//          onlineName.push(v.prarentsName);
-			if($scope.parentsList.checkboxArr.length == $scope.parentsList.tableMsgList.length) {
+			if($scope.userList.checkboxArr.length == $scope.userList.tableMsgList.length) {
 				$scope.state.allchecked = true;
 			}
 		};
-		if(action == 'remove' && $scope.parentsList.checkboxArr.indexOf(item.id) != -1) {
-			var inx = $scope.parentsList.checkboxArr.indexOf(item.id);
+		if(action == 'remove' && $scope.userList.checkboxArr.indexOf(item.id) != -1) {
+			var inx = $scope.userList.checkboxArr.indexOf(item.id);
 			var sta = onlineState.indexOf(item.state);
 			var rea = onlineName.indexOf(item.prarentsName);
-			$scope.parentsList.checkboxArr.splice(inx, 1);
+			$scope.userList.checkboxArr.splice(inx, 1);
 			onlineState.splice(sta, 1);
 			onlineName.splice(rea, 1);
 			$scope.state.allchecked = false;
@@ -742,30 +743,30 @@ app.controller('parentsHandleCtrl', ['$scope', '$timeout', '$http', 'loginServic
 	//家长停用点击单个checkbox
 	$scope.changeStopCheckbox = function(event, id) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.parentsList.checkboxStopArr.indexOf(id) == -1) {
-			$scope.parentsList.checkboxStopArr.push(id);
-			if($scope.parentsList.checkboxStopArr.length == $scope.parentsList.tableMsgStop.length) {
+		if(action == 'add' && $scope.userList.checkboxStopArr.indexOf(id) == -1) {
+			$scope.userList.checkboxStopArr.push(id);
+			if($scope.userList.checkboxStopArr.length == $scope.userList.tableMsgStop.length) {
 				$scope.state.allStopchecked = true;
 			}
 		}
-		if(action == 'remove' && $scope.parentsList.checkboxStopArr.indexOf(id) != -1) {
-			var inx = $scope.parentsList.checkboxStopArr.indexOf(id);
-			$scope.parentsList.checkboxStopArr.splice(inx, 1);
+		if(action == 'remove' && $scope.userList.checkboxStopArr.indexOf(id) != -1) {
+			var inx = $scope.userList.checkboxStopArr.indexOf(id);
+			$scope.userList.checkboxStopArr.splice(inx, 1);
 			$scope.state.allStopchecked = false;
 		}
 	}
 	//回收站点击单个checkbox
 	$scope.changeRecoverCheckbox = function(event, id) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.parentsList.checkboxReArr.indexOf(id) == -1) {
-			$scope.parentsList.checkboxReArr.push(id);
-			if($scope.parentsList.checkboxReArr.length == $scope.parentsList.tableMsgListRecover.length) {
+		if(action == 'add' && $scope.userList.checkboxReArr.indexOf(id) == -1) {
+			$scope.userList.checkboxReArr.push(id);
+			if($scope.userList.checkboxReArr.length == $scope.userList.tableMsgListRecover.length) {
 				$scope.state.allcheckedRecover = true
 			}
 		}
-		if(action == 'remove' && $scope.parentsList.checkboxReArr.indexOf(id) != -1) {
-			var inx = $scope.parentsList.checkboxReArr.indexOf(id);
-			$scope.parentsList.checkboxReArr.splice(inx, 1);
+		if(action == 'remove' && $scope.userList.checkboxReArr.indexOf(id) != -1) {
+			var inx = $scope.userList.checkboxReArr.indexOf(id);
+			$scope.userList.checkboxReArr.splice(inx, 1);
 			$scope.state.allcheckedRecover = false;
 		}
 	}

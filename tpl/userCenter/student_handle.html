@@ -1,6 +1,5 @@
 <div class="zy_main">
 	<div class="wx_fanhui">
-			<!--<a ui-sref="teacher_index.teacher_center"><img src="./img/jiantou.png" alt="" />返回</a>-->
 		<a ng-click="goBack()"><img src="./img/jiantou.png" alt="" />返回</a>
 	</div>
 	<div class="zy_cont">
@@ -16,12 +15,11 @@
 			<div class="address" ng-if="state.scope==2 ||state.scope==3" ng-hide="banzhuren">
 				<zjy-address selettypefn="selettypefn" tabflag="0"><zjy-address>
 			</div>
-			<select  id="gradeName" ng-if="state.managestatus" class="gradeselect" ng-change="changeGreade(state.gradeState)" ng-model="state.gradeState" ng-options="item.id as item.name for item in studentList.gradeList" ng-hide="banzhuren">
+			<select  id="gradeName" ng-if="state.managestatus" class="gradeselect" ng-change="changeGreade(state.gradeState)" ng-model="state.gradeState" ng-options="item.id as item.name for item in userList.gradeList" ng-hide="banzhuren">
 				<option value="">全部</option>
 			</select>
-			<!--<select ng-if="!state.managestatus" class="gradeselect" ng-change="changeGreade(state.gradeState)" ng-model="state.gradeState" ng-options="item.gradeId as item.gradeName for item in studentList.gradeList">
-			</select>-->
-			<select ng-if="state.managestatus" class="classselect" ng-change="changeClass(state.classState)" ng-model="state.classState" ng-options="item.id as item.name for item in studentList.classList" ng-hide="banzhuren">
+			
+			<select ng-if="state.managestatus" class="classselect" ng-change="changeClass(state.classState)" ng-model="state.classState" ng-options="item.id as item.name for item in userList.classList" ng-hide="banzhuren">
 				<option value="">全部</option>
 			</select>
 			<div ng-if="state.headTab==0" class="searchli"><input maxlength="30" type="text" ng-model="state.parentOnlineSearch" data-ng-keypress="onlineKeyup($event,onlineResult)" ng-trim="true" placeholder="请输入姓名或学籍号"/><span class="handle_search" ng-click="studentOnlineSearch(onlineResult)"></span></div>
@@ -31,8 +29,7 @@
 				<span class="import" ng-hide="state.scope==2 || state.scope==3">批量导入学生<input class="importinp" type="file" accept=".xls,.xlsx" onchange="angular.element(this).scope().fileAction(this)" /></span>
 				<a ng-if="state.teachStatus==15" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>
 				<a ng-if="state.teachStatus==1" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=tea_stu_xy.xlsx"><span class="downexcel">下载导入表格</span></a>
-				<!--<a ng-if="state.scope=2" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_stu_2_1.xlsx"><span class="downexcel">下载导入表格</span></a>
-				<a ng-if="state.scope=3" ng-href="{{state.modelDown}}/uc/ucUser/downloadModel?fileName=mg_stu_2_1.xlsx"><span class="downexcel">下载导入表格</span></a>-->
+				
 			</span>
 		</div>
 		<div class="zy_switchCon zjy_teach_handle">
@@ -40,31 +37,13 @@
                 <div ng-switch-when="0">
                     <div class="handle_head">
                         <ul>
-                        	<li ng-click="addOnlineAction()" ng-hide="state.scope==2 || state.scope==3">新增</li>
-                        	<!--<li ng-click="studentOnlineAction('checked')">审核</li>-->
+                        	<li ng-click="addOnlineAction()" ng-hide="state.scopestate==2 || state.scopestate==3">新增</li>
                             <li ng-click="studentOnlineAction('stop')">停用</li>
                             <li ng-click="studentOnlineAction('reset')">重置密码</li>
                             <li ng-click="studentDelet('online')">删除</li>
                         </ul>
                     </div>
-                    <!--<div class="addStudentInfo" ng-if="state.AddState">
-                    	<p onselectstart="return false;"><label for="infoName">学生姓名</label><input maxlength="30" id="infoName" type="text" placeholder="输入学生姓名" ng-trim="true" ng-model="state.addStudentName"/></p>
-                    	<p onselectstart="return false;"><label for="infoNumber">国网学籍号</label><input maxlength="30" id="infoNumber" type="text" ng-trim="true" ng-model="state.addStudentNumber" placeholder="输入国网学籍号" /></p>
-                    	<p onselectstart="return false;" ng-if="state.addGradeList.length">
-                    		<span class="add_span">年级</span>
-                    		<select class="add_select" ng-change="gradeChange(state.teaGradeId)" ng-model="state.teaGradeId" ng-options="item.id as item.name for item in state.addGradeList">
-								<option value="">请选择年级</option>
-							</select>
-                    	</p>
-                    	<p onselectstart="return false;" ng-if="state.addClassList.length">
-                    		<span class="add_span">班级</span>
-                    		<select class="add_select" ng-change="classChange(state.teaClassId)" ng-model="state.teaClassId" ng-options="item.id as item.name for item in state.addClassList">
-								<option value="">请选择班级</option>
-							</select>  
-                    	</p>
-                    	<p onselectstart="return false;" class="right" ng-click="sureAddStudent(state.addStudentName,state.addStudentNumber)">✔</p>
-                    	<p onselectstart="return false;" class="right error" ng-click="addOnlineAction('cancel')">✘</p>
-                    </div>-->
+                   
                     <div class="handle_table">
                         <table>
                             <thead>
@@ -84,7 +63,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 <tr ng-repeat="tabledata in studentList.tableMsgList">
+                                 <tr ng-repeat="tabledata in userList.tableMsgList">
 									<td><input type="checkbox" ng-checked="isChecked(tabledata.id)" ng-click="changeOnlineCheck($event,tabledata)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td>{{tabledata.realname}} <span ng-if="tabledata.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.state==2" style="color: #8D8D8D;">(已停用)</span></td>
@@ -101,8 +80,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentOnlineCount"></span>人</span>
-                           <zjy-pagination conf="studentPaginationOnline" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userOnlineCount"></span>人</span>
+                           <zjy-pagination conf="userPaginationOnline" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -132,7 +111,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 <tr ng-repeat="tabledata in studentList.tableMsgListStop">
+                                 <tr ng-repeat="tabledata in userList.tableMsgListStop">
                                     <td><input type="checkbox" ng-checked="isCheckedStop(tabledata.id)" ng-click="changeStopCheck($event,tabledata.id)" /></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td>{{tabledata.realname}} <span ng-if="tabledata.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.state==2" style="color: #8D8D8D;">(已停用)</span></td>
@@ -149,8 +128,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentStopCount"></span>人</span>
-                          <zjy-pagination conf="studentPaginationStop" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userStopCount"></span>人</span>
+                          <zjy-pagination conf="userPaginationStop" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -180,7 +159,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 <tr ng-repeat="tabledata in studentList.tableMsgListRecover">
+                                 <tr ng-repeat="tabledata in userList.tableMsgListRecover">
                                     <td><input type="checkbox" ng-checked="isCheckedRe(tabledata.id)" ng-click="changeRecoverCheck($event,tabledata.id)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td>{{tabledata.realname}} <span ng-if="tabledata.state==0" style="color: red;">(待审核)</span><span ng-if="tabledata.state==2" style="color: #8D8D8D;">(已停用)</span></td>
@@ -197,8 +176,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.studentRecoverCount"></span>人</span> 
-                            <zjy-pagination conf="studentPaginationRecover" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userRecoverCount"></span>人</span> 
+                            <zjy-pagination conf="userPaginationRecover" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -297,7 +276,7 @@
 				<li>
 					<b class="zy_mustStar">*</b>
 					<span>年<i class="wx_zhanwei"></i>级：</span>
-					<select name="" ng-model="user.grade"  ng-if="state.teachStatus!=1" ng-options="nianji.id as nianji.name for nianji in studentList.gradeList" ng-change="selClass(user.grade)" >
+					<select name="" ng-model="user.grade"  ng-if="state.teachStatus!=1" ng-options="nianji.id as nianji.name for nianji in userList.gradeList" ng-change="selClass(user.grade)" >
 						<option value="">请选择年级</option>
 					</select>
 					<span ng-bind="gradeName" ng-if="state.teachStatus==1" style="font-weight: normal;"></span>
@@ -305,7 +284,7 @@
 				<li> 
 					<b class="zy_mustStar">*</b>
 					<span>班<i class="wx_zhanwei"></i>级：</span>
-					<select name="" ng-model="user.banjiData" ng-if="state.teachStatus!=1" ng-options="banji.id as banji.name for banji in studentList.classList" >
+					<select name="" ng-model="user.banjiData" ng-if="state.teachStatus!=1" ng-options="banji.id as banji.name for banji in userList.classList" >
 						<option value="">请选择班级</option>
 					</select>
 					<span ng-bind="Classname" ng-if="state.teachStatus==1" style="font-weight: normal;"></span>

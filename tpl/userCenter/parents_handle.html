@@ -89,14 +89,14 @@
 			<div class="address" ng-if="state.scope==2 ||state.scope==3">
 				<zjy-address selettypefn="selettypefn" tabflag="0" sckey="sckey"><zjy-address>
 			</div>
-			<select ng-if="!state.parentgrade" class="gradeselect" ng-change="changeGreade(grade.gradeId)" ng-model="state.gradeState" ng-options="item.id as item.name for item in parentsList.gradeList" ng-hide="banzhuren">
+			<select ng-if="!state.parentgrade" class="gradeselect" ng-change="changeGreade(grade.gradeId)" ng-model="state.gradeState" ng-options="item.id as item.name for item in userList.gradeList" ng-hide="banzhuren">
 				 <option value="">全部</option> 
 			</select>
 			
-			<select ng-if="state.parentgrade" class="gradeselect" ng-change="changeGreade(grade.gradeId)" ng-model="state.gradeState" ng-options="item.gradeId as item.gradeName for item in parentsList.gradeList" ng-hide="banzhuren">
+			<select ng-if="state.parentgrade" class="gradeselect" ng-change="changeGreade(grade.gradeId)" ng-model="state.gradeState" ng-options="item.gradeId as item.gradeName for item in userList.gradeList" ng-hide="banzhuren">
 				 <option value="">全部</option> 
 			</select>
-			<select  id="abc" class="classselect" ng-change="changeClass(state.classState)" ng-model="state.classState" ng-options="item.id as item.name for item in parentsList.classList" ng-hide="banzhuren">
+			<select  id="abc" class="classselect" ng-change="changeClass(state.classState)" ng-model="state.classState" ng-options="item.id as item.name for item in userList.classList" ng-hide="banzhuren">
 				<option value="">全部</option>
 			</select>
 			
@@ -137,7 +137,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in parentsList.tableMsgList">
+                                <tr ng-repeat="tabledata in userList.tableMsgList">
                                     <td><input type="checkbox" ng-checked="isChecked(tabledata.id)" ng-click="changeCheckbox($event,tabledata)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.id" ng-show="{{false}}"></td>
@@ -162,8 +162,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsOnlineCount"></span>人</span> 
-                           <zjy-pagination conf="parentPaginationOnline" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userOnlineCount"></span>人</span> 
+                           <zjy-pagination conf="userPaginationOnline" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -192,7 +192,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in parentsList.tableMsgStop">
+                                <tr ng-repeat="tabledata in userList.tableMsgStop">
                                     <td><input type="checkbox" ng-checked="isStopChecked(tabledata.id)" ng-click="changeStopCheckbox($event,tabledata.id)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.id" ng-show="{{false}}"></td>
@@ -215,8 +215,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsStopCount"></span>人</span> 
-                           <zjy-pagination conf="parentPaginationStop" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userStopCount"></span>人</span> 
+                           <zjy-pagination conf="userPaginationStop" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>
@@ -245,7 +245,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="tabledata in parentsList.tableMsgListRecover">
+                                <tr ng-repeat="tabledata in userList.tableMsgListRecover">
                                     <td><input type="checkbox" ng-checked="isCheckedRecover(tabledata.id)" ng-click="changeRecoverCheckbox($event,tabledata.id)"/></td>
                                     <td ng-if="false" ng-bind="$index+1"></td>
                                     <td ng-if="false" ng-bind="tabledata.id" ng-show="{{false}}"></td>
@@ -269,8 +269,8 @@
                             </tbody>
                         </table>
                         <div class="handle_footer">
-                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.parentsRecoverCount"></span>人</span> 
-                           <zjy-pagination conf="parentPaginationRecover" onSelectStart="return false"></zjy-pagination>
+                           <span class="handle_persontit">共<span class="handle_personcount" ng-bind="state.userRecoverCount"></span>人</span> 
+                           <zjy-pagination conf="userPaginationRecover" onSelectStart="return false"></zjy-pagination>
                         </div>
                     </div>
                 </div>

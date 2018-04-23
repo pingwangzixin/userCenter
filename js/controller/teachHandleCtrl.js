@@ -28,9 +28,9 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		teachOnlineChecked: false, //在线教师-判断是否选中
 		teachStopChecked: false, //停用账号-判断是否选中
 		teachRecoverChecked: false, //回收站-判断是否选中
-		teachOnlineCount: 0,
-		teachStopCount: 0,
-		teachRecoverCount: 0,
+		userOnlineCount: 0,
+		userStopCount: 0,
+		userRecoverCount: 0,
 		warningShow: false,
 		noteContent: '',
 		testShow: 1,
@@ -48,31 +48,12 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	$scope.state.usertypestate = sessionStorage.getItem('userType') || 0
 	$scope.state.scopestate = sessionStorage.getItem('scope') || 0;
 
-//	//声明学校id变量
-//	var officeId = null;
-//	var areaIds = null;
-//	var scope = sessionStorage.getItem('scope');
-//	if($scope.state.searchOfficeId != '') {
-//		officeId = $scope.state.searchOfficeId;
-//	} else {
-//		if(scope == '2') {
-//			areaIds = sessionStorage.getItem('areaId');
-//		}
-//		if(scope == '3') {
-//			areaIds = sessionStorage.getItem('userAreaId');
-//			officeId = ''
-//		}
-//		if(scope == '4') {
-//			officeId = JSON.parse(sessionStorage.getItem('userObj')).oid;
-//		}
-//	}
-
 	if($stateParams.tableChange) {
 		$scope.state.headTab = $stateParams.tableChange;
 	}
 
 	//定义列表数据模型
-	$scope.teacherList = {
+	$scope.userList = {
 		teachOnlineArr: [],
 		teachStopArr: [],
 		teachRecoverArr: [],
@@ -110,7 +91,6 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 			$scope.tabledata(res);
 		})
 	}else if(scope==4){	//校级领导（学校管理员或者班主任）
-		console.log(userRole)
 		if(userRole==15){	//学校管理员
 			initialuserParam.officeId = officeId;
 			userParam = initialuserParam;
@@ -168,15 +148,15 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		$scope.state.teachStopChecked=false;
 		$scope.state.teachRecoverChecked=false;
 		
-		$scope.teacherList.tableMsgList = [];
-		$scope.teacherList.tableMsgListStop = [];
-		$scope.teacherList.tableMsgListRecover = [];
+		$scope.userList.tableMsgList = [];
+		$scope.userList.tableMsgListStop = [];
+		$scope.userList.tableMsgListRecover = [];
 		//选择学校后把搜索框置空
 		$scope.state.parentOnlineSearch = null;
 		//选择学校后把分页置为1
-		$scope.teachPaginationRecover.currentPage=1;
-		$scope.teachPaginationStop.currentPage=1;
-		$scope.teachPaginationOnline.currentPage=1;
+		$scope.userPaginationRecover.currentPage=1;
+		$scope.userPaginationStop.currentPage=1;
+		$scope.userPaginationOnline.currentPage=1;
 		//获取用户列表
 		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
@@ -191,36 +171,36 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		if(res.ret == 200) {
 			//在线的表格数据
 			$scope.state.lightHome = true;
-			$scope.teacherList.tableMsgList = res.data.list;
-			$scope.teachPaginationOnline.totalItems = res.data.count;
-			$scope.state.teachOnlineCount = res.data.count;
+			$scope.userList.tableMsgList = res.data.list;
+			$scope.userPaginationOnline.totalItems = res.data.count;
+			$scope.state.userOnlineCount = res.data.count;
 			//已停用的表格数据
 
-			$scope.teacherList.tableMsgListStop = res.data.list;
-			$scope.teachPaginationStop.totalItems = res.data.count;
-			$scope.state.teachStopCount = res.data.count;
+			$scope.userList.tableMsgListStop = res.data.list;
+			$scope.userPaginationStop.totalItems = res.data.count;
+			$scope.state.userStopCount = res.data.count;
 
 			//回收站的表格数据
-			$scope.teacherList.tableMsgListRecover = res.data.list;
-			$scope.teachPaginationRecover.totalItems = res.data.count;
-			$scope.state.teachRecoverCount = res.data.count;
+			$scope.userList.tableMsgListRecover = res.data.list;
+			$scope.userPaginationRecover.totalItems = res.data.count;
+			$scope.state.userRecoverCount = res.data.count;
 			
 			$timeout(function() {
 				$scope.state.warningShow = false;
 			}, 1000)
 		} else if(res.ret == 400) {
 			//在线的表格数据
-			$scope.teacherList.tableMsgList = [];
-			$scope.state.teachOnlineCount = 0;
-			$scope.teachPaginationOnline.totalItems = 0;
+			$scope.userList.tableMsgList = [];
+			$scope.state.userOnlineCount = 0;
+			$scope.userPaginationOnline.totalItems = 0;
 			//已停用的表格数据
-			$scope.teacherList.tableMsgListStop = [];
-			$scope.state.teachStopCount = 0;
-			$scope.teachPaginationStop.totalItems = 0;
+			$scope.userList.tableMsgListStop = [];
+			$scope.state.userStopCount = 0;
+			$scope.userPaginationStop.totalItems = 0;
 			//回收站的表格数据
-			$scope.teacherList.tableMsgListRecover = [];
-			$scope.state.teachRecoverCount = 0;
-			$scope.teachPaginationRecover.totalItems = 0;
+			$scope.userList.tableMsgListRecover = [];
+			$scope.state.userRecoverCount = 0;
+			$scope.userPaginationRecover.totalItems = 0;
 			$timeout(function() {
 				$scope.state.warningShow = false;
 			}, 1000)
@@ -237,13 +217,13 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		$scope.state.teachRecoverChecked=false;
 
 		
-		$scope.teacherList.tableMsgList = [];
-		$scope.teacherList.tableMsgListStop = [];
-		$scope.teacherList.tableMsgListRecover = [];
+		$scope.userList.tableMsgList = [];
+		$scope.userList.tableMsgListStop = [];
+		$scope.userList.tableMsgListRecover = [];
 		
-		$scope.teachPaginationRecover.currentPage=1;
-		$scope.teachPaginationStop.currentPage=1;
-		$scope.teachPaginationOnline.currentPage=1;
+		$scope.userPaginationRecover.currentPage=1;
+		$scope.userPaginationStop.currentPage=1;
+		$scope.userPaginationOnline.currentPage=1;
 		loginService.queryUserList(userParam, function(res) {
 			$scope.state.lightHome = false;
 			$scope.tabledata(res);
@@ -292,9 +272,9 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		$scope.state.deletStatus = false;
 		if($scope.state.headTab == 0) {
 			$scope.teachEventHandle('delet');
-		} else if($scope.state.headTab == 2) {
+		} else if($scope.state.headTab == 1) {
 			$scope.teachStopHandle('finishDele');
-		} else if($scope.state.headTab == 3) {
+		} else if($scope.state.headTab == 2) {
 			$scope.teachRecoverHandle('finishDele');
 		}
 	}
@@ -302,7 +282,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	$scope.teachDelet = function(status) {
 		switch(status) {
 			case 'online':
-				if(!$scope.teacherList.teachOnlineArr.length) {
+				if(!$scope.userList.teachOnlineArr.length) {
 					$scope.state.noteContent = '请选择选项';
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.warningShow = true;
@@ -314,7 +294,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				$scope.state.sureDeletContent = '确认删除所选教师？'
 				break;
 			case 'stop':
-				if(!$scope.teacherList.teachStopArr.length) {
+				if(!$scope.userList.teachStopArr.length) {
 					$scope.state.warningShow = true;
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.noteContent = '请至少选择一项!';
@@ -326,7 +306,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				$scope.state.sureDeletContent = '确认删除所选教师？'
 				break;
 			case 'recover':
-				if(!$scope.teacherList.teachRecoverArr.length) {
+				if(!$scope.userList.teachRecoverArr.length) {
 					$scope.state.warningShow = true;
 					$scope.state.imgNotice = 'img/wonde_big.png';
 					$scope.state.noteContent = '请至少选择一项!';
@@ -342,16 +322,16 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	}
 
 	//在线教师分页
-	$scope.teachPaginationOnline = {
+	$scope.userPaginationOnline = {
 		currentPage: 1,
 		pagesLength: 9,
 		itemsPerPage: pageSize,
 		perPageOptions: [15],
 		onChange: function() {
 			var currentPage = this.currentPage;
-			$scope.teacherList.tableMsgList = [];
-			$scope.teacherList.tableMsgListStop = [];
-			$scope.teacherList.tableMsgListRecover = [];
+			$scope.userList.tableMsgList = [];
+			$scope.userList.tableMsgListStop = [];
+			$scope.userList.tableMsgListRecover = [];
 			$scope.state.teachOnlineChecked = false;
 			$scope.state.teachStopChecked = false;
 			$scope.state.teachRecoverChecked = false;
@@ -364,7 +344,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		}
 	}
 	//停用账号分页
-	$scope.teachPaginationStop = {
+	$scope.userPaginationStop = {
 		currentPage: 1,
 		// totalItems: 10,
 		pagesLength: 9,
@@ -384,7 +364,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		}
 	}
 	//回收分页
-	$scope.teachPaginationRecover = {
+	$scope.userPaginationRecover = {
 		currentPage: 1,
 		totalItems: 10,
 		pagesLength: 9,
@@ -528,14 +508,12 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				idCard: $scope.teachNobel,
 				userMobile: $scope.teachMobel,
 				createBy: sessionStorage.getItem('userId'),
-				officeId: oid,
+				officeId: officeId,
 				remark: $scope.remarkName
 			}
 			var jsonData = angular.toJson({
 				userInfo: userInfo
 			})
-			console.log(jsonData)
-			//	    	return false;
 			$scope.love = true
 			loginService.addUser({
 				userType: 1,
@@ -574,16 +552,16 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	//点击在线全选事件
 	$scope.teachOnlineAction = function(event) {
 		var state = $scope.state.teachOnlineChecked,
-			arrList = $scope.teacherList.tableMsgList;
+			arrList = $scope.userList.tableMsgList;
 		if(state) {
-			$scope.teacherList.teachOnlineArr = [];
+			$scope.userList.teachOnlineArr = [];
 			arrList.forEach(function(v) {
-				$scope.teacherList.teachOnlineArr.push(v.teaInfo.id)
+				$scope.userList.teachOnlineArr.push(v.teaInfo.id)
 				onlineState.push(v.teaInfo.state);
 				onlineName.push(v.teaInfo.realname);
 			})
 		} else {
-			$scope.teacherList.teachOnlineArr = [];
+			$scope.userList.teachOnlineArr = [];
 			onlineState = [];
 			onlineName = [];
 		}
@@ -591,56 +569,56 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	//点击账号停用全选事件
 	$scope.teachStopAction = function(event) {
 		var state = $scope.state.teachStopChecked,
-			arrList = $scope.teacherList.tableMsgListStop;
+			arrList = $scope.userList.tableMsgListStop;
 		if(state) {
-			$scope.teacherList.teachStopArr = [];
+			$scope.userList.teachStopArr = [];
 			arrList.forEach(function(v) {
-				$scope.teacherList.teachStopArr.push(v.teaInfo.id);
+				$scope.userList.teachStopArr.push(v.teaInfo.id);
 			})
 		} else {
-			$scope.teacherList.teachStopArr = [];
+			$scope.userList.teachStopArr = [];
 		}
 	};
 	//点击回收全选事件
 	$scope.teachRecoverAction = function(event) {
 		var state = $scope.state.teachRecoverChecked,
-			arrList = $scope.teacherList.tableMsgListRecover;
+			arrList = $scope.userList.tableMsgListRecover;
 		if(state) {
-			$scope.teacherList.teachRecoverArr = [];
+			$scope.userList.teachRecoverArr = [];
 			arrList.forEach(function(v) {
-				$scope.teacherList.teachRecoverArr.push(v.teaInfo.id);
+				$scope.userList.teachRecoverArr.push(v.teaInfo.id);
 			})
 		} else {
-			$scope.teacherList.teachRecoverArr = [];
+			$scope.userList.teachRecoverArr = [];
 		}
 	}
 	//在线教师单选的选中状态
 	$scope.isOnlineChecked = function(id) {
-		return $scope.teacherList.teachOnlineArr.indexOf(id) >= 0
+		return $scope.userList.teachOnlineArr.indexOf(id) >= 0
 	}
 	//停用账号单选的选中状态
 	$scope.isStopChecked = function(id) {
-		return $scope.teacherList.teachStopArr.indexOf(id) >= 0
+		return $scope.userList.teachStopArr.indexOf(id) >= 0
 	} //回收单选的选中状态
 	$scope.isRecovereChecked = function(id) {
-		return $scope.teacherList.teachRecoverArr.indexOf(id) >= 0
+		return $scope.userList.teachRecoverArr.indexOf(id) >= 0
 	};
 	//在线教师点击单个checkbox
 	$scope.changeOnlineChecked = function(event, item) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.teacherList.teachOnlineArr.indexOf(item.id) == -1) {
-			$scope.teacherList.teachOnlineArr.push(item.id);
+		if(action == 'add' && $scope.userList.teachOnlineArr.indexOf(item.id) == -1) {
+			$scope.userList.teachOnlineArr.push(item.id);
 			onlineState.push(item.state);
 			onlineName.push(item.realname);
-			if($scope.teacherList.teachOnlineArr.length == $scope.teacherList.tableMsgList.length) {
+			if($scope.userList.teachOnlineArr.length == $scope.userList.tableMsgList.length) {
 				$scope.state.teachOnlineChecked = true
 			}
 		}
-		if(action == 'remove' && $scope.teacherList.teachOnlineArr.indexOf(item.id) != -1) {
-			var inx = $scope.teacherList.teachOnlineArr.indexOf(item.id);
+		if(action == 'remove' && $scope.userList.teachOnlineArr.indexOf(item.id) != -1) {
+			var inx = $scope.userList.teachOnlineArr.indexOf(item.id);
 			var sta = onlineState.indexOf(item.state);
 			var real = onlineName.indexOf(item.realname)
-			$scope.teacherList.teachOnlineArr.splice(inx, 1);
+			$scope.userList.teachOnlineArr.splice(inx, 1);
 			onlineState.splice(sta, 1);
 			onlineName.splice(real, 1);
 			$scope.state.teachOnlineChecked = false
@@ -649,36 +627,36 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	//停用账号点击单个checkbox
 	$scope.changeStopChecked = function(event, id) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.teacherList.teachStopArr.indexOf(id) == -1) {
-			$scope.teacherList.teachStopArr.push(id);
-			if($scope.teacherList.teachStopArr.length == $scope.teacherList.tableMsgListStop.length) {
+		if(action == 'add' && $scope.userList.teachStopArr.indexOf(id) == -1) {
+			$scope.userList.teachStopArr.push(id);
+			if($scope.userList.teachStopArr.length == $scope.userList.tableMsgListStop.length) {
 				$scope.state.teachStopChecked = true
 			}
 		}
-		if(action == 'remove' && $scope.teacherList.teachStopArr.indexOf(id) != -1) {
-			var inx = $scope.teacherList.teachStopArr.indexOf(id);
-			$scope.teacherList.teachStopArr.splice(inx, 1);
+		if(action == 'remove' && $scope.userList.teachStopArr.indexOf(id) != -1) {
+			var inx = $scope.userList.teachStopArr.indexOf(id);
+			$scope.userList.teachStopArr.splice(inx, 1);
 			$scope.state.teachStopChecked = false
 		}
 	};
 	//回收点击单个checkbox
 	$scope.changeRecoverChecked = function(event, id) {
 		var action = event.target.checked ? 'add' : 'remove';
-		if(action == 'add' && $scope.teacherList.teachRecoverArr.indexOf(id) == -1) {
-			$scope.teacherList.teachRecoverArr.push(id);
-			if($scope.teacherList.teachRecoverArr.length == $scope.teacherList.tableMsgListRecover.length) {
+		if(action == 'add' && $scope.userList.teachRecoverArr.indexOf(id) == -1) {
+			$scope.userList.teachRecoverArr.push(id);
+			if($scope.userList.teachRecoverArr.length == $scope.userList.tableMsgListRecover.length) {
 				$scope.state.teachRecoverChecked = true
 			}
 		}
-		if(action == 'remove' && $scope.teacherList.teachRecoverArr.indexOf(id) != -1) {
-			var inx = $scope.teacherList.teachRecoverArr.indexOf(id);
-			$scope.teacherList.teachRecoverArr.splice(inx, 1);
+		if(action == 'remove' && $scope.userList.teachRecoverArr.indexOf(id) != -1) {
+			var inx = $scope.userList.teachRecoverArr.indexOf(id);
+			$scope.userList.teachRecoverArr.splice(inx, 1);
 			$scope.state.teachRecoverChecked = false
 		}
 	}
 	//在线教师点击
 	$scope.teachEventHandle = function(changeState) {
-		if(!$scope.teacherList.teachOnlineArr.length) {
+		if(!$scope.userList.teachOnlineArr.length) {
 			$scope.state.noteContent = '请选择选项';
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.warningShow = true;
@@ -690,7 +668,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		switch(changeState) {
 			case 'stop':
 				var objParames = {
-					ids: $scope.teacherList.teachOnlineArr.join(','),
+					ids: $scope.userList.teachOnlineArr.join(','),
 					state: 2,
 					delFlag: 0,
 					updateBy: userId
@@ -732,7 +710,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				//密码重置
 			case 'passReset':
 				var objParames = {
-					ids: $scope.teacherList.teachOnlineArr.join(','),
+					ids: $scope.userList.teachOnlineArr.join(','),
 					state: '',
 					delFlag: '',
 					updateBy: userId
@@ -740,13 +718,13 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				//              objParames.pageNo=1;
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
-						$scope.teachPaginationRecover.currentPage = 1;
-						$scope.teachPaginationStop.currentPage = 1;
-						$scope.teachPaginationOnline.currentPage = 1;
+						$scope.userPaginationRecover.currentPage = 1;
+						$scope.userPaginationStop.currentPage = 1;
+						$scope.userPaginationOnline.currentPage = 1;
 
-						$scope.teacherList.tableMsgList = [];
-						$scope.teacherList.tableMsgListStop = [];
-						$scope.teacherList.tableMsgListRecover = [];
+						$scope.userList.tableMsgList = [];
+						$scope.userList.tableMsgListStop = [];
+						$scope.userList.tableMsgListRecover = [];
 
 						$scope.state.teachOnlineChecked = false;
 						$scope.state.teachStopChecked = false;
@@ -778,20 +756,20 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				break;
 			case 'delet':
 				var objParames = {
-					ids: $scope.teacherList.teachOnlineArr.join(','),
+					ids: $scope.userList.teachOnlineArr.join(','),
 					delFlag: 3,
 					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
 
-						$scope.teachPaginationRecover.currentPage = 1;
-						$scope.teachPaginationStop.currentPage = 1;
-						$scope.teachPaginationOnline.currentPage = 1;
+						$scope.userPaginationRecover.currentPage = 1;
+						$scope.userPaginationStop.currentPage = 1;
+						$scope.userPaginationOnline.currentPage = 1;
 
-						$scope.teacherList.tableMsgList = [];
-						$scope.teacherList.tableMsgListStop = [];
-						$scope.teacherList.tableMsgListRecover = [];
+						$scope.userList.tableMsgList = [];
+						$scope.userList.tableMsgListStop = [];
+						$scope.userList.tableMsgListRecover = [];
 
 						$scope.state.teachOnlineChecked = false;
 						$scope.state.teachStopChecked = false;
@@ -825,7 +803,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 
 	//教师账号停用事件
 	$scope.teachStopHandle = function(changeState) {
-		if(!$scope.teacherList.teachStopArr.length) {
+		if(!$scope.userList.teachStopArr.length) {
 			$scope.state.noteContent = '请选择选项';
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.warningShow = true;
@@ -840,7 +818,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		switch(changeState) {
 			case 'renew':
 				var objParames = {
-					ids: $scope.teacherList.teachStopArr.join(','),
+					ids: $scope.userList.teachStopArr.join(','),
 					state: 1,
 					delFlag: 0,
 					updateBy: userId
@@ -871,19 +849,19 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				break;
 			case 'finishDele':
 				var objParames = {
-					ids: $scope.teacherList.teachStopArr.join(','),
+					ids: $scope.userList.teachStopArr.join(','),
 					delFlag: 3,
 					updateBy: userId
 				}
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
-
-						$scope.teachPaginationRecover.currentPage = 1;
-						$scope.teachPaginationStop.currentPage = 1;
-						$scope.teachPaginationOnline.currentPage = 1;
-						$scope.teacherList.tableMsgList = [];
-						$scope.teacherList.tableMsgListStop = [];
-						$scope.teacherList.tableMsgListRecover = [];
+						
+						$scope.userPaginationRecover.currentPage = 1;
+						$scope.userPaginationStop.currentPage = 1;
+						$scope.userPaginationOnline.currentPage = 1;
+						$scope.userList.tableMsgList = [];
+						$scope.userList.tableMsgListStop = [];
+						$scope.userList.tableMsgListRecover = [];
 
 						$scope.state.teachOnlineChecked = false;
 						$scope.state.teachStopChecked = false;
@@ -916,7 +894,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 	}
 	//教师回收事件
 	$scope.teachRecoverHandle = function(changeState) {
-		if(!$scope.teacherList.teachRecoverArr.length) {
+		if(!$scope.userList.teachRecoverArr.length) {
 			$scope.state.noteContent = '请选择选项';
 			$scope.state.imgNotice = 'img/wonde_big.png';
 			$scope.state.warningShow = true;
@@ -928,7 +906,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 		switch(changeState) {
 			case 'startUser':
 				var objParames = {
-					ids: $scope.teacherList.teachRecoverArr.join(','),
+					ids: $scope.userList.teachRecoverArr.join(','),
 					state: '',
 					delFlag: 0,
 					updateBy: userId
@@ -936,13 +914,13 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				loginService.batchUpdataUserState(objParames, function(res) {
 					if(res.ret == 200) {
 
-						$scope.teachPaginationRecover.currentPage = 1;
-						$scope.teachPaginationStop.currentPage = 1;
-						$scope.teachPaginationOnline.currentPage = 1;
+						$scope.userPaginationRecover.currentPage = 1;
+						$scope.userPaginationStop.currentPage = 1;
+						$scope.userPaginationOnline.currentPage = 1;
 
-						$scope.teacherList.tableMsgList = [];
-						$scope.teacherList.tableMsgListStop = [];
-						$scope.teacherList.tableMsgListRecover = [];
+						$scope.userList.tableMsgList = [];
+						$scope.userList.tableMsgListStop = [];
+						$scope.userList.tableMsgListRecover = [];
 
 						$scope.state.teachOnlineChecked = false;
 						$scope.state.teachStopChecked = false;
@@ -971,7 +949,7 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				break;
 			case 'finishDele':
 				var objParames = {
-					ids: $scope.teacherList.teachRecoverArr.join(','),
+					ids: $scope.userList.teachRecoverArr.join(','),
 					state: '',
 					delFlag: 1,
 					userType: '1',
@@ -979,14 +957,13 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 				}
 				loginService.batchDeleteUserState(objParames, function(res) {
 					if(res.ret == 200) {
+						$scope.userPaginationRecover.currentPage = 1;
+						$scope.userPaginationStop.currentPage = 1;
+						$scope.userPaginationOnline.currentPage = 1;
 
-						$scope.teachPaginationRecover.currentPage = 1;
-						$scope.teachPaginationStop.currentPage = 1;
-						$scope.teachPaginationOnline.currentPage = 1;
-
-						$scope.teacherList.tableMsgList = [];
-						$scope.teacherList.tableMsgListStop = [];
-						$scope.teacherList.tableMsgListRecover = [];
+						$scope.userList.tableMsgList = [];
+						$scope.userList.tableMsgListStop = [];
+						$scope.userList.tableMsgListRecover = [];
 
 						$scope.state.teachOnlineChecked = false;
 						$scope.state.teachStopChecked = false;
@@ -995,7 +972,6 @@ app.controller('teachHandleCtrl', ['$scope', 'loginService', '$state', '$statePa
 						$scope.state.noteContent = '用户已彻底删除';
 						$scope.state.imgNotice = 'img/chenggong.png';
 						$scope.state.warningShow = true;
-//						$scope.TeacherQueryList();
 						$timeout(function() {
 							$scope.state.warningShow = false;
 							$state.go('teacher_index.teach_handle', null, {
